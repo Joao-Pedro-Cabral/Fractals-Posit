@@ -14,7 +14,7 @@ PYTHON := python3.11
 
 .PHONY: all run
 
-all: float double half posit_32 compare
+all: float double half posit32_2 posit16_2 compare
 
 float:
 	$(CXX) $(CXXFLAGS) -D__USE_FLOAT__ -o $(OUT) $(SRC)
@@ -28,8 +28,12 @@ half:
 	$(CXX) $(CXXFLAGS) -D__USE_HALF__ -o $(OUT) $(SRC)
 	$(SCRIPT)
 
-posit_32:
-	$(CXX) $(CXXFLAGS) -D__USE_POSIT_32__ -o $(OUT) $(SRC)
+posit32_2:
+	$(CXX) $(CXXFLAGS) -D__USE_POSIT_32_2__ -o $(OUT) $(SRC)
+	$(SCRIPT)
+
+posit16_2:
+	$(CXX) $(CXXFLAGS) -D__USE_POSIT_16_2__ -o $(OUT) $(SRC)
 	$(SCRIPT)
 
 compare:

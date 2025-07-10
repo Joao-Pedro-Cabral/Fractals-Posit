@@ -9,9 +9,12 @@
 #define IMAGE_SIZE (WIDTH*HEIGHT*CHANNELS)
 #define MAXCOUNT 1000
 
-#ifdef __USE_POSIT_32__ 
+#ifdef __USE_POSIT_32_2__ 
 typedef sw::universal::posit<32,2> num_t;
 static const char type_name[10] = "posit32_2";
+#elif __USE_POSIT_16_2__ 
+typedef sw::universal::posit<16,2> num_t;
+static const char type_name[10] = "posit16_2";
 #elif __USE_DOUBLE__
 typedef double num_t;
 static const char type_name[10] = "double";
