@@ -8,10 +8,10 @@
 
 void generate_palette(unsigned char palette[256][3]) {
     for (int i = 0; i < 256; i++) {
-        num_t t = i / 255.0f;
+        num_t t = i / (num_t)255;
         palette[i][0] = (uint32_t)(9 * (1 - t) * t * t * t * 255);         // Red
         palette[i][1] = (uint32_t)(15 * (1 - t) * (1 - t) * t * t * 255);  // Green
-        palette[i][2] = (uint32_t)(8.5 * (1 - t) * (1 - t) * (1 - t) * t * 255); // Blue
+        palette[i][2] = (uint32_t)(17 * (1 - t) * (1 - t) * (1 - t) * t * 255/2); // Blue
     }
 }
 
@@ -37,9 +37,9 @@ void draw(unsigned char* image, fractal_args_t fractal_args) {
                 zy = y * yscale + fractal_args.top;
             }
             int i;
-            for(i = 0; (i < MAXCOUNT) && (zx * zx + zy * zy < 4.0f); i++) {
+            for(i = 0; (i < MAXCOUNT) && (zx * zx + zy * zy < 4); i++) {
                 num_t temp = zx * zx - zy * zy + cx;
-                zy = 2.0f * zx * zy + cy;
+                zy = 2 * zx * zy + cy;
                 zx = temp;
             }
 
@@ -79,27 +79,27 @@ int main(int argc, char *argv[]) {
     } else {
         error_message();
     }
-    center_x = atof(argv[2]);
-    center_y = atof(argv[3]);
+    center_x = (num_t)atof(argv[2]);
+    center_y = (num_t)atof(argv[3]);
 
-    fractal_args.xside = atof(argv[4]);
+    fractal_args.xside = (num_t)atof(argv[4]);
     fractal_args.yside = fractal_args.xside * HEIGHT / WIDTH;
 
     fractal_args.left = center_x - fractal_args.xside / 2;
     fractal_args.top  = center_y - fractal_args.yside / 2;
 
     if(fractal_args.fractal_type == JULIA_SET) {
-        fractal_args.cx = atof(argv[5]);
-        fractal_args.cy = atof(argv[6]); 
+        fractal_args.cx = (num_t)atof(argv[5]);
+        fractal_args.cy = (num_t)atof(argv[6]); 
     }
 
     draw(image, fractal_args);
 
     char filename[512];
     if(fractal_args.fractal_type == MANDELBROT) {
-        snprintf(filename, sizeof(filename), "mandelbrot_%+.6f_%+.6f_%+.6f_%s.png", (double)center_x, (double)center_y, (double)fractal_args.xside, type_name);
+        snprintf(filename, sizeof(filename), "mandelbrot_%+.6f_%+.6f_%+.6f_%s.png", atof(argv[2]), atof(argv[3]), atof(argv[4]), type_name);
     } else { // JULIA_SET
-        snprintf(filename, sizeof(filename), "julia_set_%+.6f_%+.6f_%+.6f_%+.6f_%+.6f_%s.png", (double)center_x, (double)center_y, (double)fractal_args.xside, (double)fractal_args.cx, (double)fractal_args.cy, type_name);
+        snprintf(filename, sizeof(filename), "julia_set_%+.6f_%+.6f_%+.6f_%+.6f_%+.6f_%s.png", atof(argv[2]), atof(argv[3]), atof(argv[4]), atof(argv[5]), atof(argv[6]), type_name);
     }    
 
     // Save the image

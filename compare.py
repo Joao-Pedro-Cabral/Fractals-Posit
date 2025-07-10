@@ -64,8 +64,8 @@ def compare_sift(image1_path, image2_path):
 
 
 # Regex pattern
-mandelbrot_pattern = re.compile(r'^mandelbrot_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_(float|double|posit32_2)\.png$')
-julia_pattern = re.compile(r'^julia_set_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_(float|double|posit32_2)\.png$')
+mandelbrot_pattern = re.compile(r'^mandelbrot_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_(float|half|double|posit32_2)\.png$')
+julia_pattern = re.compile(r'^julia_set_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_(float|half|double|posit32_2)\.png$')
 
 groups = {}
 
@@ -90,6 +90,7 @@ with open("comparison_results.csv", "w", newline="") as csvfile:
     writer.writerow([
         "parameters",
         "float_ssim", "float_hist", "float_sift",
+        "half_ssim", "half_hist", "half_sift",
         "posit32_2_ssim", "posit32_2_hist", "posit32_2_sift",
     ])
 
@@ -99,12 +100,18 @@ with open("comparison_results.csv", "w", newline="") as csvfile:
             continue
 
         float_ssim = float_hist = float_sift = None
+        half_ssim = half_hist = half_sift = None
         posit_ssim = posit_hist = posit_sift = None
 
         if "float" in files:
             float_ssim = compare_ssim(files["float"], double_img)
             float_hist = compare_sift(files["float"], double_img)
             float_sift = compare_sift(files["float"], double_img)
+
+        if "half" in files:
+            half_ssim = compare_ssim(files["half"], double_img)
+            half_hist = compare_sift(files["half"], double_img)
+            half_sift = compare_sift(files["half"], double_img)
 
         if "posit32_2" in files:
             posit_ssim = compare_ssim(files["posit32_2"], double_img)
@@ -116,6 +123,9 @@ with open("comparison_results.csv", "w", newline="") as csvfile:
             f"{float_ssim:.4f}" if float_ssim is not None else "",
             f"{float_hist:.4f}" if float_hist is not None else "",
             f"{float_sift:.4f}" if float_sift is not None else "",
+            f"{half_ssim:.4f}" if half_ssim is not None else "",
+            f"{half_hist:.4f}" if half_hist is not None else "",
+            f"{half_sift:.4f}" if half_sift is not None else "",
             f"{posit_ssim:.4f}" if posit_ssim is not None else "",
             f"{posit_hist:.4f}" if posit_hist is not None else "",
             f"{posit_sift:.4f}" if posit_sift is not None else "",

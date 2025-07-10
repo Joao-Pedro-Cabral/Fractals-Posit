@@ -15,6 +15,9 @@ static const char type_name[10] = "posit32_2";
 #elif __USE_DOUBLE__
 typedef double num_t;
 static const char type_name[10] = "double";
+#elif __USE_HALF__
+typedef _Float16 num_t;
+static const char type_name[10] = "half";
 #else // __USE_FLOAT__
 typedef float num_t;
 static const char type_name[10] = "float";
