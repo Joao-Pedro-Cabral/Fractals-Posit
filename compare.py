@@ -27,16 +27,24 @@ def compare_images(image1_path, image2_path):
     return ssim_index, diff_pixels
 
 # Regex pattern
-pattern = re.compile(r'^mandelbrot_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_(float|double|posit32_2)\.png$')
+mandelbrot_pattern = re.compile(r'^mandelbrot_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_(float|double|posit32_2)\.png$')
+julia_pattern = re.compile(r'^julia_set_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_(float|double|posit32_2)\.png$')
 
 groups = {}
 
 # Group images by parameters
 for filename in os.listdir('.'):
-    match = pattern.match(filename)
+    match = mandelbrot_pattern.match(filename)
     if match:
         key = f"{match.group(1)}_{match.group(2)}_{match.group(3)}"
         dtype = match.group(4)
+        groups.setdefault(key, {})[dtype] = filename
+        continue
+
+    match = julia_pattern.match(filename)
+    if match:
+        key = f"{match.group(1)}_{match.group(2)}_{match.group(3)}_{match.group(4)}_{match.group(5)}"
+        dtype = match.group(6)
         groups.setdefault(key, {})[dtype] = filename
 
 # Write CSV

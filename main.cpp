@@ -4,6 +4,7 @@
 #include "stb_image_write.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 void generate_palette(unsigned char palette[256][3]) {
     for (int i = 0; i < 256; i++) {
@@ -14,25 +15,32 @@ void generate_palette(unsigned char palette[256][3]) {
     }
 }
 
-void draw_mandelbrot(unsigned char* image, num_t left, num_t top, num_t xside, num_t yside) {
-    num_t xscale = xside / WIDTH;
-    num_t yscale = yside / HEIGHT;
+void draw(unsigned char* image, fractal_args_t fractal_args) {
+    num_t xscale = fractal_args.xside / WIDTH;
+    num_t yscale = fractal_args.yside / HEIGHT;
     unsigned char palette[256][3];
     generate_palette(palette);
 
     #pragma omp parallel for collapse(2) schedule(dynamic, 100)
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
-            num_t cx = x * xscale + left;
-            num_t cy = y * yscale + top;
-            num_t zx = 0, zy = 0, temp;
-            int i = 0;
-
-            while ((zx * zx + zy * zy < 4.0f) && (i < MAXCOUNT)) {
-                temp = zx * zx - zy * zy + cx;
+            num_t cx, cy, zx, zy;
+            if(fractal_args.fractal_type == MANDELBROT) {
+                cx = x * xscale + fractal_args.left;
+                cy = y * yscale + fractal_args.top;
+                zx = 0;
+                zy = 0;
+            } else { // JULIA_SET
+                cx = fractal_args.cx;
+                cy = fractal_args.cy;
+                zx = x * xscale + fractal_args.left;
+                zy = y * yscale + fractal_args.top;
+            }
+            int i;
+            for(i = 0; (i < MAXCOUNT) && (zx * zx + zy * zy < 4.0f); i++) {
+                num_t temp = zx * zx - zy * zy + cx;
                 zy = 2.0f * zx * zy + cy;
                 zx = temp;
-                i++;
             }
 
             int index = 3 * (y * WIDTH + x);
@@ -50,28 +58,49 @@ void draw_mandelbrot(unsigned char* image, num_t left, num_t top, num_t xside, n
     }
 }
 
+void error_message() {
+    printf("Unexpected input!\n");
+    printf("Usage:\n./program_name mandelbrot <center_x> <center_y> <xside>\n");
+    printf("./program_name julia_set <center_x> <center_y> <xside> <complex_x> <complex_y>\n");
+    exit(1);
+}
+
 int main(int argc, char *argv[]) {
     unsigned char* image = (unsigned char*)malloc(IMAGE_SIZE);
-    num_t center_x, center_y , xside;
+    num_t center_x, center_y;
 
-    if (argc != 4) {
-        printf("Wrong number of parameters: got %d, expected: 4\n", argc);
-        printf("Usage: ./program_name <center_x> <center_y> <xside>\n");
-        exit(1);
+    fractal_args_t fractal_args;
+    if (argc == 0) {
+        error_message();
+    } else if(strcmp(argv[1], "mandelbrot") == 0 && argc == 5) {
+        fractal_args.fractal_type = MANDELBROT;
+    } else if(strcmp(argv[1], "julia_set") == 0 && argc == 7) {
+        fractal_args.fractal_type = JULIA_SET;
+    } else {
+        error_message();
     }
-    center_x = atof(argv[1]);
-    center_y = atof(argv[2]);
-    xside    = atof(argv[3]);
+    center_x = atof(argv[2]);
+    center_y = atof(argv[3]);
 
-    num_t yside = xside * HEIGHT / WIDTH;
+    fractal_args.xside = atof(argv[4]);
+    fractal_args.yside = fractal_args.xside * HEIGHT / WIDTH;
 
-    num_t left = center_x - xside / 2;
-    num_t top  = center_y - yside / 2;
+    fractal_args.left = center_x - fractal_args.xside / 2;
+    fractal_args.top  = center_y - fractal_args.yside / 2;
 
-    draw_mandelbrot(image, left, top, xside, yside);
+    if(fractal_args.fractal_type == JULIA_SET) {
+        fractal_args.cx = atof(argv[5]);
+        fractal_args.cy = atof(argv[6]); 
+    }
 
-    char filename[256];
-    snprintf(filename, sizeof(filename), "mandelbrot_%+.6f_%+.6f_%g_%s.png", (double)center_x, (double)center_y, (double)xside, type_name);
+    draw(image, fractal_args);
+
+    char filename[512];
+    if(fractal_args.fractal_type == MANDELBROT) {
+        snprintf(filename, sizeof(filename), "mandelbrot_%+.6f_%+.6f_%+.6f_%s.png", (double)center_x, (double)center_y, (double)fractal_args.xside, type_name);
+    } else { // JULIA_SET
+        snprintf(filename, sizeof(filename), "julia_set_%+.6f_%+.6f_%+.6f_%+.6f_%+.6f_%s.png", (double)center_x, (double)center_y, (double)fractal_args.xside, (double)fractal_args.cx, (double)fractal_args.cy, type_name);
+    }    
 
     // Save the image
     if (stbi_write_png(filename, WIDTH, HEIGHT, CHANNELS, image, WIDTH * CHANNELS)) {

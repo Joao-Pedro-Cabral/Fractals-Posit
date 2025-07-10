@@ -4,7 +4,7 @@ CXXFLAGS := -O2 -std=c++20 -fopenmp
 
 # Sources and output
 SRC := main.cpp
-OUT := mandelbrot
+OUT := fractal
 
 # Script
 SCRIPT := ./run.sh
@@ -17,15 +17,15 @@ PYTHON := python3.11
 all: float double posit_32 compare
 
 float:
-	$(CXX) $(CXXFLAGS) -D__USE_FLOAT__ -o mandelbrot main.cpp
+	$(CXX) $(CXXFLAGS) -D__USE_FLOAT__ -o $(OUT) $(SRC)
 	$(SCRIPT)
 
 double:
-	$(CXX) $(CXXFLAGS) -D__USE_DOUBLE__ -o mandelbrot main.cpp
+	$(CXX) $(CXXFLAGS) -D__USE_DOUBLE__ -o $(OUT) $(SRC)
 	$(SCRIPT)
 
 posit_32:
-	$(CXX) $(CXXFLAGS) -D__USE_POSIT_32__ -o mandelbrot main.cpp
+	$(CXX) $(CXXFLAGS) -D__USE_POSIT_32__ -o $(OUT) $(SRC)
 	$(SCRIPT)
 
 compare:

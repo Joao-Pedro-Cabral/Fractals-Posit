@@ -20,4 +20,19 @@ typedef float num_t;
 static const char type_name[10] = "float";
 #endif
 
+typedef enum {
+  MANDELBROT,
+  JULIA_SET
+} fractal_t;
+
+typedef struct {
+  num_t left;
+  num_t top;
+  num_t xside;
+  num_t yside;
+  num_t cx;
+  num_t cy;
+  fractal_t fractal_type; 
+} fractal_args_t;
+
 #endif // __MAIN__H__
