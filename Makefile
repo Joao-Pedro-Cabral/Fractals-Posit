@@ -1,6 +1,6 @@
 # Compiler and flags
 CXX := g++
-CXXFLAGS := -O2 -std=c++20
+CXXFLAGS := -O2 -std=c++20 -fopenmp
 
 # Sources and output
 SRC := main.cpp
@@ -32,4 +32,4 @@ compare:
 	$(PYTHON) compare.py
 
 clean:
-	rm -f $(OUT) *.png
+	rm -f $(OUT) *.png *.csv

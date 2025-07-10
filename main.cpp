@@ -16,6 +16,7 @@ void draw_mandelbrot(unsigned char* image, num_t left, num_t top, num_t xside, n
     unsigned char palette[256][3];
     generate_palette(palette);
 
+    #pragma omp parallel for collapse(2) schedule(dynamic, 10)
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
             num_t cx = x * xscale + left;
@@ -58,14 +59,14 @@ int main(int argc, char *argv[]) {
     num_t center_x, center_y , xside;
 
     if (argc != 4) {
-        center_x = atof(argv[1]);
-        center_y = atof(argv[2]);
-        xside    = atof(argv[3]);
-    } else {
         printf("Wrong number of parameters: got %d, expected: 4\n", argc);
         printf("Usage: ./program_name <center_x> <center_y> <xside>\n");
         exit(1);
     }
+    center_x = atof(argv[1]);
+    center_y = atof(argv[2]);
+    xside    = atof(argv[3]);
+
     num_t yside = xside * HEIGHT / WIDTH;
 
     num_t left = center_x - xside / 2;

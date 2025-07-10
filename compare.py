@@ -3,6 +3,7 @@ from PIL import Image
 import numpy as np
 import os
 import re
+import csv
 
 def compare_images(image1_path, image2_path):
     # Load and convert to grayscale
