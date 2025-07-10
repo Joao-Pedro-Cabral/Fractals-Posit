@@ -1,5 +1,9 @@
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "main.h"
+#include "stb_image_write.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 void generate_palette(unsigned char palette[256][3]) {
     for (int i = 0; i < 256; i++) {
@@ -16,7 +20,7 @@ void draw_mandelbrot(unsigned char* image, num_t left, num_t top, num_t xside, n
     unsigned char palette[256][3];
     generate_palette(palette);
 
-    #pragma omp parallel for collapse(2) schedule(dynamic, 10)
+    #pragma omp parallel for collapse(2) schedule(dynamic, 100)
     for (int y = 0; y < HEIGHT; y++) {
         for (int x = 0; x < WIDTH; x++) {
             num_t cx = x * xscale + left;
@@ -48,14 +52,6 @@ void draw_mandelbrot(unsigned char* image, num_t left, num_t top, num_t xside, n
 
 int main(int argc, char *argv[]) {
     unsigned char* image = (unsigned char*)malloc(IMAGE_SIZE);
-
-    // num_t left = -2.0f;
-    // num_t top = -1.25f;
-    // num_t xside = 3.0f;
-    // num_t yside = 2.5f;
-    // -0.74548 + 0.11669 i @ 0.01276
-    // -0.744567 + 0.121201 i @ 0.002
-
     num_t center_x, center_y , xside;
 
     if (argc != 4) {
@@ -75,7 +71,7 @@ int main(int argc, char *argv[]) {
     draw_mandelbrot(image, left, top, xside, yside);
 
     char filename[256];
-    snprintf(filename, sizeof(filename), "mandelbrot_%+.6f_%+.6f_%g_%s.png", center_x, center_y, xside, type_name);
+    snprintf(filename, sizeof(filename), "mandelbrot_%+.6f_%+.6f_%g_%s.png", (double)center_x, (double)center_y, (double)xside, type_name);
 
     // Save the image
     if (stbi_write_png(filename, WIDTH, HEIGHT, CHANNELS, image, WIDTH * CHANNELS)) {

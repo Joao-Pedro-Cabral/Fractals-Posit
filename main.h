@@ -1,11 +1,6 @@
 #ifndef __MAIN__H__
 #define __MAIN__H__
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb_image_write.h"
-
-#include <stdio.h>
-#include <stdlib.h>
 #include <universal/number/posit/posit.hpp>
 
 #define WIDTH 800
