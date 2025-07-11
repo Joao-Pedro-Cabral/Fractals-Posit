@@ -4,7 +4,6 @@ import numpy as np
 import os
 import re
 import csv
-
 import cv2
 
 def compare_ssim(image1_path, image2_path):

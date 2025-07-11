@@ -10,7 +10,7 @@ OUT := fractal
 SCRIPT := ./run.sh
 
 # Python
-PYTHON := python3.11
+PYTHON := python3
 
 .PHONY: all run
 
@@ -38,6 +38,9 @@ posit16_2:
 
 compare:
 	$(PYTHON) compare.py
+
+install:
+	pip install numpy opencv-python pillow scikit-image
 
 clean:
 	rm -f $(OUT) *.png *.csv
