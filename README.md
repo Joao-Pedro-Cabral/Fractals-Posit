@@ -4,6 +4,7 @@ A small C++ & Python toolchain to generate and compare Mandelbrot and Julia‑se
 
 - `float`, `_Float16` (half), `double`
 - `Posit<32,2>` and `Posit<16,2>`
+- `BFloat16`
 
 After running the code, the generated images are written to `build/`. The images can be compared via SSIM, histogram correlation and SIFT using the `compare.py` file, which results are stored in `build/comparison_results.csv`.
 
@@ -12,7 +13,7 @@ After running the code, the generated images are written to `build/`. The images
 ## Features
 
 - **C++** fractal generator with OpenMP
-- Support for IEEE floats, IEEE half‑precision, IEEE doubles and Posit (via the *universal* library)
+- Support for IEEE floats, IEEE half‑precision, IEEE doubles, Posit and BFloat16 (via the *universal* library)
 - Automatic palette and PNG export (using [*stb\_image\_write*](https://github.com/nothings/stb/tree/master))
 - Bash script to run a variety of parameter sets
 - Python script to compute image similarity (SSIM, histogram, SIFT)
@@ -67,8 +68,8 @@ After running the code, the generated images are written to `build/`. The images
 ## Makefile Targets
 
 - `make all`\
-  Compile & run (`float`, `double`, `half`, `posit32_2`, `posit16_2`), then compare
-- `make float|double|half|posit32_2|posit16_2`\
+  Compile & run (`float`, `double`, `half`, `posit32_2`, `posit16_2`, `bfloat16`), then compare
+- `make float|double|half|posit32_2|posit16_2|bfloat16`\
   Build & run one numeric type
 - `make compare`\
   Only compare images stored in `build/`
