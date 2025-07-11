@@ -9,9 +9,11 @@
 void generate_palette(unsigned char palette[256][3]) {
     for (int i = 0; i < 256; i++) {
         num_t t = i / (num_t)255;
-        palette[i][0] = (uint32_t)(9 * (1 - t) * t * t * t * 255);         // Red
-        palette[i][1] = (uint32_t)(15 * (1 - t) * (1 - t) * t * t * 255);  // Green
-        palette[i][2] = (uint32_t)(17 * (1 - t) * (1 - t) * (1 - t) * t * 255/2); // Blue
+        // Some implementations from Universal doesn't have cast to integer types
+        // Then I cast to double and implicitly to uint8_t
+        palette[i][0] = (double)(9 * (1 - t) * t * t * t * 255);         // Red
+        palette[i][1] = (double)(15 * (1 - t) * (1 - t) * t * t * 255);  // Green
+        palette[i][2] = (double)(17 * (1 - t) * (1 - t) * (1 - t) * t * 255/2); // Blue
     }
 }
 

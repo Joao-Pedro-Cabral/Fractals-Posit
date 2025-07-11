@@ -64,8 +64,8 @@ def compare_sift(image1_path, image2_path):
 
 
 # Regex pattern
-mandelbrot_pattern = re.compile(r'^mandelbrot_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_(float|half|double|posit32_2|posit16_2)\.png$')
-julia_pattern = re.compile(r'^julia_set_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_(float|half|double|posit32_2|posit16_2)\.png$')
+mandelbrot_pattern = re.compile(r'^mandelbrot_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_(float|half|double|posit32_2|posit16_2|bfloat16)\.png$')
+julia_pattern = re.compile(r'^julia_set_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_(float|half|double|posit32_2|posit16_2|bfloat16)\.png$')
 
 groups = {}
 
@@ -96,6 +96,7 @@ with open(csv_path, "w", newline="") as csvfile:
         "half_ssim", "half_hist", "half_sift",
         "posit32_2_ssim", "posit32_2_hist", "posit32_2_sift",
         "posit16_2_ssim", "posit16_2_hist", "posit16_2_sift",
+        "bfloat16_ssim", "bfloat16_hist", "bfloat16_sift",
     ])
 
     for key, files in groups.items():
@@ -121,6 +122,10 @@ with open(csv_path, "w", newline="") as csvfile:
         posit16_2_hist = compare_hist(path("posit16_2"), path("double")) if "posit16_2" in files else None
         posit16_2_sift = compare_sift(path("posit16_2"), path("double")) if "posit16_2" in files else None
 
+        bfloat16_ssim = compare_ssim(path("bfloat16"), path("double")) if "bfloat16" in files else None
+        bfloat16_hist = compare_hist(path("bfloat16"), path("double")) if "bfloat16" in files else None
+        bfloat16_sift = compare_sift(path("bfloat16"), path("double")) if "bfloat16" in files else None
+
         writer.writerow([
             key,
             f"{float_ssim:.4f}" if float_ssim is not None else "",
@@ -135,4 +140,7 @@ with open(csv_path, "w", newline="") as csvfile:
             f"{posit16_2_ssim:.4f}" if posit16_2_ssim is not None else "",
             f"{posit16_2_hist:.4f}" if posit16_2_hist is not None else "",
             f"{posit16_2_sift:.4f}" if posit16_2_sift is not None else "",
+            f"{bfloat16_ssim:.4f}" if bfloat16_ssim is not None else "",
+            f"{bfloat16_hist:.4f}" if bfloat16_hist is not None else "",
+            f"{bfloat16_sift:.4f}" if bfloat16_sift is not None else "",
         ])

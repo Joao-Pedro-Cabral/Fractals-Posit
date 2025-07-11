@@ -2,6 +2,7 @@
 #define __MAIN__H__
 
 #include <universal/number/posit/posit.hpp>
+#include <universal/number/bfloat/bfloat.hpp>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -15,13 +16,16 @@ static const char type_name[10] = "posit32_2";
 #elif __USE_POSIT_16_2__ 
 typedef sw::universal::posit<16,2> num_t;
 static const char type_name[10] = "posit16_2";
+#elif __USE_BFLOAT_16__
+typedef sw::universal::bfloat16 num_t;
+static const char type_name[10] = "bfloat16";
 #elif __USE_DOUBLE__
 typedef double num_t;
 static const char type_name[10] = "double";
 #elif __USE_HALF__
 typedef _Float16 num_t;
 static const char type_name[10] = "half";
-#else // __USE_FLOAT__
+#elif __USE_FLOAT__
 typedef float num_t;
 static const char type_name[10] = "float";
 #endif

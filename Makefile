@@ -13,7 +13,7 @@ PYTHON := python3
 
 .PHONY: all clean install float double half posit32_2 posit16_2 compare
 
-all: $(OUTDIR) float double half posit32_2 posit16_2 compare
+all: $(OUTDIR) float double half posit32_2 posit16_2 bfloat16 compare
 
 $(OUTDIR):
 	mkdir -p $(OUTDIR)
@@ -36,6 +36,10 @@ posit32_2:
 
 posit16_2:
 	$(CXX) $(CXXFLAGS) -D__USE_POSIT_16_2__ -o $(OUT) $(SRC)
+	$(SCRIPT)
+
+bfloat16:
+	$(CXX) $(CXXFLAGS) -D__USE_BFLOAT_16__ -o $(OUT) $(SRC)
 	$(SCRIPT)
 
 compare:
