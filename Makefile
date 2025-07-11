@@ -3,7 +3,7 @@ CXX := g++
 CXXFLAGS := -O2 -std=c++20 -fopenmp -Wall -Wextra
 
 # Sources and output
-SRC := main.cpp
+SRC := fractal.cpp
 OUTDIR := build
 OUT := $(OUTDIR)/fractal
 

@@ -1,6 +1,6 @@
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "main.h"
+#include "fractal.h"
 #include "stb_image_write.h"
 #include <stdio.h>
 #include <stdlib.h>
