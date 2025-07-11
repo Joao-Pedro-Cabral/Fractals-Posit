@@ -5,6 +5,7 @@ import os
 import re
 import csv
 import cv2
+import sys
 
 def compare_ssim(image1_path, image2_path):
     # Load and convert to grayscale
@@ -68,8 +69,10 @@ julia_pattern = re.compile(r'^julia_set_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-
 
 groups = {}
 
+build_dir = "build"
+
 # Group images by parameters
-for filename in os.listdir('.'):
+for filename in os.listdir(build_dir):
     match = mandelbrot_pattern.match(filename)
     if match:
         key = f"{match.group(1)}_{match.group(2)}_{match.group(3)}"
@@ -83,8 +86,9 @@ for filename in os.listdir('.'):
         dtype = match.group(6)
         groups.setdefault(key, {})[dtype] = filename
 
-# Write CSV
-with open("comparison_results.csv", "w", newline="") as csvfile:
+# Write CSV to build directory
+csv_path = os.path.join(build_dir, "comparison_results.csv")
+with open(csv_path, "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow([
         "parameters",
@@ -99,30 +103,23 @@ with open("comparison_results.csv", "w", newline="") as csvfile:
         if not double_img:
             continue
 
-        float_ssim = float_hist = float_sift = None
-        half_ssim = half_hist = half_sift = None
-        posit32_2_ssim = posit32_2_hist = posit32_2_sift = None
-        posit16_2_ssim = posit16_2_hist = posit16_2_sift = None
+        def path(dtype): return os.path.join(build_dir, files[dtype]) if dtype in files else None
 
-        if "float" in files:
-            float_ssim = compare_ssim(files["float"], double_img)
-            float_hist = compare_hist(files["float"], double_img)
-            float_sift = compare_sift(files["float"], double_img)
+        float_ssim = compare_ssim(path("float"), path("double")) if "float" in files else None
+        float_hist = compare_hist(path("float"), path("double")) if "float" in files else None
+        float_sift = compare_sift(path("float"), path("double")) if "float" in files else None
 
-        if "half" in files:
-            half_ssim = compare_ssim(files["half"], double_img)
-            half_hist = compare_hist(files["half"], double_img)
-            half_sift = compare_sift(files["half"], double_img)
+        half_ssim = compare_ssim(path("half"), path("double")) if "half" in files else None
+        half_hist = compare_hist(path("half"), path("double")) if "half" in files else None
+        half_sift = compare_sift(path("half"), path("double")) if "half" in files else None
 
-        if "posit32_2" in files:
-            posit32_2_ssim = compare_ssim(files["posit32_2"], double_img)
-            posit32_2_hist = compare_hist(files["posit32_2"], double_img)
-            posit32_2_sift = compare_sift(files["posit32_2"], double_img)
+        posit32_2_ssim = compare_ssim(path("posit32_2"), path("double")) if "posit32_2" in files else None
+        posit32_2_hist = compare_hist(path("posit32_2"), path("double")) if "posit32_2" in files else None
+        posit32_2_sift = compare_sift(path("posit32_2"), path("double")) if "posit32_2" in files else None
 
-        if "posit16_2" in files:
-            posit16_2_ssim = compare_ssim(files["posit16_2"], double_img)
-            posit16_2_hist = compare_hist(files["posit16_2"], double_img)
-            posit16_2_sift = compare_sift(files["posit16_2"], double_img)
+        posit16_2_ssim = compare_ssim(path("posit16_2"), path("double")) if "posit16_2" in files else None
+        posit16_2_hist = compare_hist(path("posit16_2"), path("double")) if "posit16_2" in files else None
+        posit16_2_sift = compare_sift(path("posit16_2"), path("double")) if "posit16_2" in files else None
 
         writer.writerow([
             key,

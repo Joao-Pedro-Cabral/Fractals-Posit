@@ -4,17 +4,19 @@ CXXFLAGS := -O2 -std=c++20 -fopenmp -Wall -Wextra
 
 # Sources and output
 SRC := main.cpp
-OUT := fractal
+OUTDIR := build
+OUT := $(OUTDIR)/fractal
 
 # Script
 SCRIPT := ./run.sh
-
-# Python
 PYTHON := python3
 
-.PHONY: all run
+.PHONY: all clean install float double half posit32_2 posit16_2 compare
 
-all: float double half posit32_2 posit16_2 compare
+all: $(OUTDIR) float double half posit32_2 posit16_2 compare
+
+$(OUTDIR):
+	mkdir -p $(OUTDIR)
 
 float:
 	$(CXX) $(CXXFLAGS) -D__USE_FLOAT__ -o $(OUT) $(SRC)
@@ -43,4 +45,4 @@ install:
 	pip install numpy opencv-python pillow scikit-image
 
 clean:
-	rm -f $(OUT) *.png *.csv
+	rm -rf $(OUTDIR)

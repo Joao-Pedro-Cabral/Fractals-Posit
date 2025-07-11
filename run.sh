@@ -15,6 +15,8 @@ params=(
   "julia_set 0.000 0.000 3 -0.4 -0.59"
 )
 
+cd build
+
 # Run the executable for each parameter set
 for p in "${params[@]}"; do
   echo "Running with parameters: $p"
