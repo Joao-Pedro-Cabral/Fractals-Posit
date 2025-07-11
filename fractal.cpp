@@ -39,10 +39,13 @@ void draw(unsigned char* image, fractal_args_t fractal_args) {
                 zy = y * yscale + fractal_args.top;
             }
             int i;
-            for(i = 0; (i < MAXCOUNT) && (zx * zx + zy * zy < 4); i++) {
+            // TODO: Universal bfloat16 doesn't work with <
+            double z_abs = (double) (zx * zx + zy * zy);
+            for(i = 0; (i < MAXCOUNT) && (z_abs < 4); i++) {
                 num_t temp = zx * zx - zy * zy + cx;
                 zy = 2 * zx * zy + cy;
                 zx = temp;
+                z_abs = (double) (zx * zx + zy * zy);
             }
 
             int index = 3 * (y * WIDTH + x);
