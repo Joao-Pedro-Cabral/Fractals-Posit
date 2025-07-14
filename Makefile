@@ -9,7 +9,7 @@ OUT := $(OUTDIR)/fractal
 
 # Script
 SCRIPT := ./run.sh
-PYTHON := python3.11
+PYTHON := python3
 
 .PHONY: all clean install float double half posit32_2 posit16_2 compare
 

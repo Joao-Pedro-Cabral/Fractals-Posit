@@ -97,3 +97,15 @@ build/fractal julia_set 0.00000 0.00000 3.00000 -0.4 -0.59
 ```
 
 ---
+
+## References
+
+The fractal inputs used in the `run.sh` script are obtained from the following links:
+
+https://www.mrob.com/pub/muency/seahorsevalley.html
+https://en.wikipedia.org/wiki/Julia_set
+https://paulbourke.net/fractals/juliaset/index.html
+https://paulbourke.net/fractals/mandelbrot/
+https://forums.raspberrypi.com/viewtopic.php?t=21029
+
+---
