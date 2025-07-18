@@ -109,11 +109,10 @@ with open(csv_path, "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
     writer.writerow([
         "parameters",
-        "float_ssim", "float_hist", "float_sift", "float_fft_rmse",
-        "half_ssim", "half_hist", "half_sift", "half_fft_rmse",
-        "posit32_2_ssim", "posit32_2_hist", "posit32_2_sift", "posit32_2_fft_rmse",
-        "posit16_2_ssim", "posit16_2_hist", "posit16_2_sift", "posit16_2_fft_rmse",
-        "bfloat16_ssim", "bfloat16_hist", "bfloat16_sift", "bfloat16_fft_rmse",
+        "float_ssim", "half_ssim", "posit32_2_ssim", "posit16_2_ssim", "bfloat16_ssim",
+        "float_hist", "half_hist", "posit32_2_hist", "posit16_2_hist", "bfloat16_hist",
+        "float_sift", "half_sift", "posit32_2_sift", "posit16_2_sift", "bfloat16_sift",
+        "float_fft_rmse", "half_fft_rmse", "posit32_2_fft_rmse", "posit16_2_fft_rmse", "bfloat16_fft_rmse"
     ])
 
     for key, files in groups.items():
@@ -151,23 +150,23 @@ with open(csv_path, "w", newline="") as csvfile:
         writer.writerow([
             key,
             f"{float_ssim:.4f}" if float_ssim is not None else "",
-            f"{float_hist:.4f}" if float_hist is not None else "",
-            f"{float_sift:.4f}" if float_sift is not None else "",
-            f"{float_fft_rmse:.6f}" if float_fft_rmse is not None else "",
             f"{half_ssim:.4f}" if half_ssim is not None else "",
-            f"{half_hist:.4f}" if half_hist is not None else "",
-            f"{half_sift:.4f}" if half_sift is not None else "",
-            f"{half_fft_rmse:.6f}" if half_fft_rmse is not None else "",
             f"{posit32_2_ssim:.4f}" if posit32_2_ssim is not None else "",
-            f"{posit32_2_hist:.4f}" if posit32_2_hist is not None else "",
-            f"{posit32_2_sift:.4f}" if posit32_2_sift is not None else "",
-            f"{posit32_2_fft_rmse:.6f}" if posit32_2_fft_rmse is not None else "",
             f"{posit16_2_ssim:.4f}" if posit16_2_ssim is not None else "",
-            f"{posit16_2_hist:.4f}" if posit16_2_hist is not None else "",
-            f"{posit16_2_sift:.4f}" if posit16_2_sift is not None else "",
-            f"{posit16_2_fft_rmse:.6f}" if posit16_2_fft_rmse is not None else "",
             f"{bfloat16_ssim:.4f}" if bfloat16_ssim is not None else "",
+            f"{float_hist:.4f}" if float_hist is not None else "",
+            f"{half_hist:.4f}" if half_hist is not None else "",
+            f"{posit32_2_hist:.4f}" if posit32_2_hist is not None else "",
+            f"{posit16_2_hist:.4f}" if posit16_2_hist is not None else "",
             f"{bfloat16_hist:.4f}" if bfloat16_hist is not None else "",
+            f"{float_sift:.4f}" if float_sift is not None else "",
+            f"{half_sift:.4f}" if half_sift is not None else "",
+            f"{posit32_2_sift:.4f}" if posit32_2_sift is not None else "",
+            f"{posit16_2_sift:.4f}" if posit16_2_sift is not None else "",
             f"{bfloat16_sift:.4f}" if bfloat16_sift is not None else "",
+            f"{float_fft_rmse:.6f}" if float_fft_rmse is not None else "",
+            f"{half_fft_rmse:.6f}" if half_fft_rmse is not None else "",
+            f"{posit32_2_fft_rmse:.6f}" if posit32_2_fft_rmse is not None else "",
+            f"{posit16_2_fft_rmse:.6f}" if posit16_2_fft_rmse is not None else "",
             f"{bfloat16_fft_rmse:.6f}" if bfloat16_fft_rmse is not None else "",
         ])
