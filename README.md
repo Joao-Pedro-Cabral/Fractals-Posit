@@ -98,6 +98,35 @@ build/fractal julia_set 0.00000 0.00000 3.00000 -0.4 -0.59
 
 ---
 
+## Note about the inputs
+
+Different implementations of the Mandelbrot and Julia sets often use different conventions for how the points are calculated based on the input parameters.
+
+In this implementation, the output image dimensions are defined as:
+
+```bash
+HEIGHT = 600, WIDTH = 800;
+yside = xside * HEIGHT / WIDTH;
+left = center_x - xside / 2;
+top = center_y - yside / 2;
+```
+
+Additionaly, for Mandelbrot set, the constant **c** is defined as:
+
+```bash
+xscale = xside / WIDTH;
+yscale = yside / HEIGHT;
+cx = x * xscale + left;
+cy = y * yscale + top;
+```
+
+For the Julia set, the coordinates of **z** are computed in the same way as **c** in the Mandelbrot set:
+
+```bash
+zx = x * xscale + left;
+zy = y * yscale + top;
+```
+
 ## References
 
 The fractal inputs used in the `run.sh` script are obtained from the following links:
