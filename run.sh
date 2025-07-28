@@ -3,7 +3,7 @@
 # Name executable
 EXEC=./fractal
 
-# List of parameter sets: center_x center_y xside
+# List of parameter sets
 params=(
   "mandelbrot -0.759 0.000 2.500"
   "mandelbrot -0.75 0.08 0.16"

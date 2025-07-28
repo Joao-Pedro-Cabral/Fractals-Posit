@@ -11,9 +11,9 @@ OUT := $(OUTDIR)/fractal
 SCRIPT := ./run.sh
 PYTHON := python3
 
-.PHONY: all clean install float double half posit32_2 posit16_2 compare
+.PHONY: all
 
-all: $(OUTDIR) float double half posit32_2 posit16_2 bfloat16 compare
+all: $(OUTDIR) float double half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare
 
 $(OUTDIR):
 	mkdir -p $(OUTDIR)
@@ -40,6 +40,14 @@ posit16_2:
 
 bfloat16:
 	$(CXX) $(CXXFLAGS) -D__USE_BFLOAT_16__ -o $(OUT) $(SRC)
+	$(SCRIPT)
+
+cfloat36_8:
+	$(CXX) $(CXXFLAGS) -D__USE_CFLOAT_36_8__ -o $(OUT) $(SRC)
+	$(SCRIPT)
+
+cfloat17_5:
+	$(CXX) $(CXXFLAGS) -D__USE_CFLOAT_17_5__ -o $(OUT) $(SRC)
 	$(SCRIPT)
 
 compare:
