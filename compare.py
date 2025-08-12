@@ -107,84 +107,31 @@ for filename in os.listdir(build_dir):
 csv_path = os.path.join(build_dir, "comparison_results.csv")
 with open(csv_path, "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
-    writer.writerow([
-        "parameters",
-        "float_ssim", "half_ssim", "posit32_2_ssim", "posit16_2_ssim", "bfloat16_ssim", "cfloat36_8_ssim", "cfloat17_5_ssim",
-        "float_hist", "half_hist", "posit32_2_hist", "posit16_2_hist", "bfloat16_hist", "cfloat36_8_hist", "cfloat17_5_hist",
-        "float_sift", "half_sift", "posit32_2_sift", "posit16_2_sift", "bfloat16_sift", "cfloat36_8_sift", "cfloat17_5_sift",
-        "float_fft_rmse", "half_fft_rmse", "posit32_2_fft_rmse", "posit16_2_fft_rmse", "bfloat16_fft_rmse", "cfloat36_8_fft_rmse", "cfloat17_5_fft_rmse"
-    ])
+
+    dtypes = ["float", "half", "posit32_2", "posit16_2", "bfloat16", "cfloat36_8", "cfloat17_5"]
+    metrics = [
+        ("ssim", compare_ssim, 4),
+        ("hist", compare_hist, 4),
+        ("sift", compare_sift, 4),
+        ("fft_rmse", compare_fft_rmse, 6)
+    ]
+
+    # Write header
+    header = ["parameters"] + [f"{dt}_{m}" for m, _, _ in metrics for dt in dtypes]
+    writer.writerow(header)
 
     for key, files in groups.items():
-        double_img = files.get("double")
-        if not double_img:
+        if "double" not in files:
             continue
 
         def path(dtype): return os.path.join(build_dir, files[dtype]) if dtype in files else None
 
-        float_ssim = compare_ssim(path("float"), path("double")) if "float" in files else None
-        float_hist = compare_hist(path("float"), path("double")) if "float" in files else None
-        float_sift = compare_sift(path("float"), path("double")) if "float" in files else None
-        float_fft_rmse = compare_fft_rmse(path("float"), path("double")) if "float" in files else None
+        results = {}
+        for dtype in dtypes:
+            if dtype in files:
+                for metric_name, func, precision in metrics:
+                    val = func(path(dtype), path("double"))
+                    results[(dtype, metric_name)] = f"{val:.{precision}f}"
 
-        half_ssim = compare_ssim(path("half"), path("double")) if "half" in files else None
-        half_hist = compare_hist(path("half"), path("double")) if "half" in files else None
-        half_sift = compare_sift(path("half"), path("double")) if "half" in files else None
-        half_fft_rmse = compare_fft_rmse(path("half"), path("double")) if "half" in files else None
-
-        posit32_2_ssim = compare_ssim(path("posit32_2"), path("double")) if "posit32_2" in files else None
-        posit32_2_hist = compare_hist(path("posit32_2"), path("double")) if "posit32_2" in files else None
-        posit32_2_sift = compare_sift(path("posit32_2"), path("double")) if "posit32_2" in files else None
-        posit32_2_fft_rmse = compare_fft_rmse(path("posit32_2"), path("double")) if "posit32_2" in files else None
-
-        posit16_2_ssim = compare_ssim(path("posit16_2"), path("double")) if "posit16_2" in files else None
-        posit16_2_hist = compare_hist(path("posit16_2"), path("double")) if "posit16_2" in files else None
-        posit16_2_sift = compare_sift(path("posit16_2"), path("double")) if "posit16_2" in files else None
-        posit16_2_fft_rmse = compare_fft_rmse(path("posit16_2"), path("double")) if "posit16_2" in files else None
-
-        bfloat16_ssim = compare_ssim(path("bfloat16"), path("double")) if "bfloat16" in files else None
-        bfloat16_hist = compare_hist(path("bfloat16"), path("double")) if "bfloat16" in files else None
-        bfloat16_sift = compare_sift(path("bfloat16"), path("double")) if "bfloat16" in files else None
-        bfloat16_fft_rmse = compare_fft_rmse(path("bfloat16"), path("double")) if "bfloat16" in files else None
-
-        cfloat36_8_ssim = compare_ssim(path("cfloat36_8"), path("double")) if "cfloat36_8" in files else None
-        cfloat36_8_hist = compare_hist(path("cfloat36_8"), path("double")) if "cfloat36_8" in files else None
-        cfloat36_8_sift = compare_sift(path("cfloat36_8"), path("double")) if "cfloat36_8" in files else None
-        cfloat36_8_fft_rmse = compare_fft_rmse(path("cfloat36_8"), path("double")) if "cfloat36_8" in files else None
-
-        cfloat17_5_ssim = compare_ssim(path("cfloat17_5"), path("double")) if "cfloat17_5" in files else None
-        cfloat17_5_hist = compare_hist(path("cfloat17_5"), path("double")) if "cfloat17_5" in files else None
-        cfloat17_5_sift = compare_sift(path("cfloat17_5"), path("double")) if "cfloat17_5" in files else None
-        cfloat17_5_fft_rmse = compare_fft_rmse(path("cfloat17_5"), path("double")) if "cfloat17_5" in files else None
-
-        writer.writerow([
-            key,
-            f"{float_ssim:.4f}" if float_ssim is not None else "",
-            f"{half_ssim:.4f}" if half_ssim is not None else "",
-            f"{posit32_2_ssim:.4f}" if posit32_2_ssim is not None else "",
-            f"{posit16_2_ssim:.4f}" if posit16_2_ssim is not None else "",
-            f"{bfloat16_ssim:.4f}" if bfloat16_ssim is not None else "",
-            f"{cfloat36_8_ssim:.4f}" if cfloat36_8_ssim is not None else "",
-            f"{cfloat17_5_ssim:.4f}" if cfloat17_5_ssim is not None else "",
-            f"{float_hist:.4f}" if float_hist is not None else "",
-            f"{half_hist:.4f}" if half_hist is not None else "",
-            f"{posit32_2_hist:.4f}" if posit32_2_hist is not None else "",
-            f"{posit16_2_hist:.4f}" if posit16_2_hist is not None else "",
-            f"{bfloat16_hist:.4f}" if bfloat16_hist is not None else "",
-            f"{cfloat36_8_hist:.4f}" if cfloat36_8_hist is not None else "",
-            f"{cfloat17_5_hist:.4f}" if cfloat17_5_hist is not None else "",
-            f"{float_sift:.4f}" if float_sift is not None else "",
-            f"{half_sift:.4f}" if half_sift is not None else "",
-            f"{posit32_2_sift:.4f}" if posit32_2_sift is not None else "",
-            f"{posit16_2_sift:.4f}" if posit16_2_sift is not None else "",
-            f"{bfloat16_sift:.4f}" if bfloat16_sift is not None else "",
-            f"{cfloat36_8_sift:.4f}" if cfloat36_8_sift is not None else "",
-            f"{cfloat17_5_sift:.4f}" if cfloat17_5_sift is not None else "",
-            f"{float_fft_rmse:.6f}" if float_fft_rmse is not None else "",
-            f"{half_fft_rmse:.6f}" if half_fft_rmse is not None else "",
-            f"{posit32_2_fft_rmse:.6f}" if posit32_2_fft_rmse is not None else "",
-            f"{posit16_2_fft_rmse:.6f}" if posit16_2_fft_rmse is not None else "",
-            f"{bfloat16_fft_rmse:.6f}" if bfloat16_fft_rmse is not None else "",
-            f"{cfloat36_8_fft_rmse:.4f}" if cfloat36_8_fft_rmse is not None else "",
-            f"{cfloat17_5_fft_rmse:.4f}" if cfloat17_5_fft_rmse is not None else "",
-        ])
+        row = [key] + [results[(dt, m)] for m, _, _ in metrics for dt in dtypes]
+        writer.writerow(row)
