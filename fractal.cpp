@@ -8,18 +8,18 @@
 
 void generate_palette(unsigned char palette[256][3]) {
     for (int i = 0; i < 256; i++) {
-        num_t t = i / (num_t)255;
+        num_t t = (num_t) i / (num_t)255;
         // Some implementations from Universal doesn't have cast to integer types
         // Then I cast to double and implicitly to uint8_t
-        palette[i][0] = (double)(9 * (1 - t) * t * t * t * 255);         // Red
-        palette[i][1] = (double)(15 * (1 - t) * (1 - t) * t * t * 255);  // Green
-        palette[i][2] = (double)(17 * (1 - t) * (1 - t) * (1 - t) * t * 255/2); // Blue
+        palette[i][0] = (double)((num_t)9 * ((num_t)1 - t) * t * t * t * (num_t)255);                                      // Red
+        palette[i][1] = (double)((num_t)15 * ((num_t)1 - t) * ((num_t)1 - t) * t * t * (num_t)255);                        // Green
+        palette[i][2] = (double)((num_t)17 * ((num_t)1 - t) * ((num_t)1 - t) * ((num_t)1 - t) * t * (num_t)255/(num_t)2);  // Blue
     }
 }
 
 void draw(unsigned char* image, fractal_args_t fractal_args) {
-    num_t xscale = fractal_args.xside / WIDTH;
-    num_t yscale = fractal_args.yside / HEIGHT;
+    num_t xscale = fractal_args.xside / (num_t)WIDTH;
+    num_t yscale = fractal_args.yside / (num_t)HEIGHT;
     unsigned char palette[256][3];
     generate_palette(palette);
 
@@ -28,20 +28,20 @@ void draw(unsigned char* image, fractal_args_t fractal_args) {
         for (int x = 0; x < WIDTH; x++) {
             num_t cx, cy, zx, zy;
             if(fractal_args.fractal_type == MANDELBROT) {
-                cx = x * xscale + fractal_args.left;
-                cy = y * yscale + fractal_args.top;
+                cx = (num_t)x * xscale + fractal_args.left;
+                cy = (num_t)y * yscale + fractal_args.top;
                 zx = 0;
                 zy = 0;
             } else { // JULIA_SET
                 cx = fractal_args.cx;
                 cy = fractal_args.cy;
-                zx = x * xscale + fractal_args.left;
-                zy = y * yscale + fractal_args.top;
+                zx = (num_t)x * xscale + fractal_args.left;
+                zy = (num_t)y * yscale + fractal_args.top;
             }
             int i;
-            for(i = 0; (i < MAXCOUNT) && (zx * zx + zy * zy < 4); i++) {
+            for(i = 0; (i < MAXCOUNT) && (zx * zx + zy * zy < (num_t) 4); i++) {
                 num_t temp = zx * zx - zy * zy + cx;
-                zy = 2 * zx * zy + cy;
+                zy = (num_t) 2 * zx * zy + cy;
                 zx = temp;
             }
 
@@ -85,10 +85,10 @@ int main(int argc, char *argv[]) {
     center_y = (num_t)atof(argv[3]);
 
     fractal_args.xside = (num_t)atof(argv[4]);
-    fractal_args.yside = fractal_args.xside * HEIGHT / WIDTH;
+    fractal_args.yside = fractal_args.xside * (num_t) HEIGHT / (num_t) WIDTH;
 
-    fractal_args.left = center_x - fractal_args.xside / 2;
-    fractal_args.top  = center_y - fractal_args.yside / 2;
+    fractal_args.left = center_x - fractal_args.xside / (num_t) 2;
+    fractal_args.top  = center_y - fractal_args.yside / (num_t) 2;
 
     if(fractal_args.fractal_type == JULIA_SET) {
         fractal_args.cx = (num_t)atof(argv[5]);

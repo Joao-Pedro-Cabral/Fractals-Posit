@@ -4,6 +4,8 @@
 #include <universal/number/posit/posit.hpp>
 #include <universal/number/bfloat/bfloat.hpp>
 #include <universal/number/cfloat/cfloat.hpp>
+#include <universal/number/unum/unum.hpp>
+#include <universal/number/unum2/unum2_impl.hpp>
 
 #define WIDTH 800
 #define HEIGHT 600
@@ -35,6 +37,15 @@ static const char type_name[20] = "cfloat36_8";
 #elif __USE_CFLOAT_17_5__
 typedef sw::universal::cfloat<17, 5, uint32_t, true, false, false> num_t;
 static const char type_name[20] = "cfloat17_5";
+#elif __USE_UNUMI_32_4__
+typedef sw::universal::unum<64, 4> num_t;
+static const char type_name[20] = "unumI32_4";
+#elif __USE_UNUMI_16_4__
+typedef sw::universal::unum<16, 4> num_t;
+static const char type_name[20] = "unumI16_4";
+#elif __USE_UNUMII_16_4__
+typedef sw::universal::unum2<16, 4, uint32_t> num_t;
+static const char type_name[20] = "unumII16_4";
 #endif
 
 typedef enum {

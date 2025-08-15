@@ -9,11 +9,11 @@ OUT := $(OUTDIR)/fractal
 
 # Script
 SCRIPT := ./run.sh
-PYTHON := python3
+PYTHON := python3.11
 
 .PHONY: all
 
-all: $(OUTDIR) float double half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare
+all: $(OUTDIR) float double half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 unumI32_4 unumI16_4 unumII16_4 compare
 
 $(OUTDIR):
 	mkdir -p $(OUTDIR)
@@ -48,6 +48,18 @@ cfloat36_8:
 
 cfloat17_5:
 	$(CXX) $(CXXFLAGS) -D__USE_CFLOAT_17_5__ -o $(OUT) $(SRC)
+	$(SCRIPT)
+
+unumI32_4:
+	$(CXX) $(CXXFLAGS) -D__USE_UNUMI_32_4__ -o $(OUT) $(SRC)
+	$(SCRIPT)
+
+unumI16_4:
+	$(CXX) $(CXXFLAGS) -D__USE_UNUMI_16_4__ -o $(OUT) $(SRC)
+	$(SCRIPT)
+
+unumII16_4:
+	$(CXX) $(CXXFLAGS) -D__USE_UNUMII_16_4__ -o $(OUT) $(SRC)
 	$(SCRIPT)
 
 compare:
