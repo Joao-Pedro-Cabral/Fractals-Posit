@@ -11,44 +11,39 @@ OUT := $(OUTDIR)/fractal
 SCRIPT := ./run.sh
 PYTHON := python3
 
-.PHONY: all
+.PHONY: all compile float double half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare install clean
 
-all: $(OUTDIR) float double half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare
+all: $(OUTDIR) compile float double half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare
 
 $(OUTDIR):
 	mkdir -p $(OUTDIR)
 
+compile:
+	$(CXX) $(CXXFLAGS) -o $(OUT) $(SRC)
+
 float:
-	$(CXX) $(CXXFLAGS) -D__USE_FLOAT__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+	$(SCRIPT) float
 
 double:
-	$(CXX) $(CXXFLAGS) -D__USE_DOUBLE__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+	$(SCRIPT) double
 
 half:
-	$(CXX) $(CXXFLAGS) -D__USE_HALF__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+	$(SCRIPT) half
 
 posit32_2:
-	$(CXX) $(CXXFLAGS) -D__USE_POSIT_32_2__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+	$(SCRIPT) posit32_2
 
 posit16_2:
-	$(CXX) $(CXXFLAGS) -D__USE_POSIT_16_2__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+	$(SCRIPT) posit16_2
 
 bfloat16:
-	$(CXX) $(CXXFLAGS) -D__USE_BFLOAT_16__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+	$(SCRIPT) bfloat16
 
 cfloat36_8:
-	$(CXX) $(CXXFLAGS) -D__USE_CFLOAT_36_8__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+	$(SCRIPT) cfloat36_8
 
 cfloat17_5:
-	$(CXX) $(CXXFLAGS) -D__USE_CFLOAT_17_5__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+	$(SCRIPT) cfloat17_5
 
 compare:
 	$(PYTHON) compare.py

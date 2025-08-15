@@ -18,7 +18,8 @@ params=(
 cd build
 
 # Run the executable for each parameter set
+echo "Running with format $1"
 for p in "${params[@]}"; do
   echo "Running with parameters: $p"
-  $EXEC $p
+  $EXEC $1 $p
 done

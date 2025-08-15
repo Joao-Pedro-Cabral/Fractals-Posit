@@ -1,5 +1,5 @@
-#ifndef __MAIN__H__
-#define __MAIN__H__
+#ifndef __FRACTAL__H__
+#define __FRACTAL__H__
 
 #include <universal/number/posit/posit.hpp>
 #include <universal/number/bfloat/bfloat.hpp>
@@ -42,14 +42,15 @@ typedef enum {
   JULIA_SET
 } fractal_t;
 
-typedef struct {
-  num_t left;
-  num_t top;
-  num_t xside;
-  num_t yside;
-  num_t cx;
-  num_t cy;
+template<typename T>
+struct fractal_args_t {
+  T left;
+  T top;
+  T xside;
+  T yside;
+  T cx;
+  T cy;
   fractal_t fractal_type; 
-} fractal_args_t;
+};
 
-#endif // __MAIN__H__
+#endif // __FRACTAL__H__
