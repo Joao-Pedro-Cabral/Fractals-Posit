@@ -78,25 +78,25 @@ void error_message() {
 template<typename T>
 void interpret_args(int argc, char *argv[], fractal_args_t<T>& fractal_args) {
 
-    if(strcmp(argv[1], "mandelbrot") == 0 && argc == 5) {
+    if(strcmp(argv[2], "mandelbrot") == 0 && argc == 6) {
         fractal_args.fractal_type = MANDELBROT;
-    } else if(strcmp(argv[1], "julia_set") == 0 && argc == 7) {
+    } else if(strcmp(argv[2], "julia_set") == 0 && argc == 8) {
         fractal_args.fractal_type = JULIA_SET;
     } else {
         error_message();
     }
-    T center_x = static_cast<T>(atof(argv[2]));
-    T center_y = static_cast<T>(atof(argv[3]));
+    T center_x = static_cast<T>(atof(argv[3]));
+    T center_y = static_cast<T>(atof(argv[4]));
 
-    fractal_args.xside = static_cast<T>(atof(argv[4]));
+    fractal_args.xside = static_cast<T>(atof(argv[5]));
     fractal_args.yside = fractal_args.xside * static_cast<T>(HEIGHT) / static_cast<T>(WIDTH);
 
     fractal_args.left = center_x - fractal_args.xside / static_cast<T>(2);
     fractal_args.top  = center_y - fractal_args.yside / static_cast<T>(2);
 
     if(fractal_args.fractal_type == JULIA_SET) {
-        fractal_args.cx = static_cast<T>(atof(argv[5]));
-        fractal_args.cy = static_cast<T>(atof(argv[6])); 
+        fractal_args.cx = static_cast<T>(atof(argv[6]));
+        fractal_args.cy = static_cast<T>(atof(argv[7])); 
     }
 }
 
@@ -111,7 +111,7 @@ fractal_t fractal(int argc, char *argv[], unsigned char* image) {
 int main(int argc, char *argv[]) {
     unsigned char* image = (unsigned char*)malloc(IMAGE_SIZE);
 
-    if (argc == 0) {
+    if (argc < 2) {
         error_message();
     }
 
@@ -139,9 +139,9 @@ int main(int argc, char *argv[]) {
 
     char filename[512];
     if(type == MANDELBROT) {
-        snprintf(filename, sizeof(filename), "mandelbrot_%+.6f_%+.6f_%+.6f_%s.png", atof(argv[2]), atof(argv[3]), atof(argv[4]), argv[1]);
+        snprintf(filename, sizeof(filename), "mandelbrot_%+.6f_%+.6f_%+.6f_%s.png", atof(argv[3]), atof(argv[4]), atof(argv[5]), argv[1]);
     } else { // JULIA_SET
-        snprintf(filename, sizeof(filename), "julia_set_%+.6f_%+.6f_%+.6f_%+.6f_%+.6f_%s.png", atof(argv[2]), atof(argv[3]), atof(argv[4]), atof(argv[5]), atof(argv[6]), argv[1]);
+        snprintf(filename, sizeof(filename), "julia_set_%+.6f_%+.6f_%+.6f_%+.6f_%+.6f_%s.png", atof(argv[3]), atof(argv[4]), atof(argv[5]), atof(argv[6]), atof(argv[7]), argv[1]);
     }    
 
     // Save the image
