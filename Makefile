@@ -11,44 +11,42 @@ OUT := $(OUTDIR)/fractal
 SCRIPT := ./run.sh
 PYTHON := python3
 
-.PHONY: all
+.PHONY: all compile gen_all_images double float half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare install clean
 
-all: $(OUTDIR) float double half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare
+all: $(OUTDIR) compile gen_all_images compare
 
 $(OUTDIR):
 	mkdir -p $(OUTDIR)
 
-float:
-	$(CXX) $(CXXFLAGS) -D__USE_FLOAT__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+compile: $(OUTDIR)
+	$(CXX) $(CXXFLAGS) -o $(OUT) $(SRC)
 
-double:
-	$(CXX) $(CXXFLAGS) -D__USE_DOUBLE__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+double: $(OUTDIR)
+	$(SCRIPT) double
 
-half:
-	$(CXX) $(CXXFLAGS) -D__USE_HALF__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+float: $(OUTDIR)
+	$(SCRIPT) float
 
-posit32_2:
-	$(CXX) $(CXXFLAGS) -D__USE_POSIT_32_2__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+half: $(OUTDIR)
+	$(SCRIPT) half
 
-posit16_2:
-	$(CXX) $(CXXFLAGS) -D__USE_POSIT_16_2__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+posit32_2: $(OUTDIR)
+	$(SCRIPT) posit32_2
 
-bfloat16:
-	$(CXX) $(CXXFLAGS) -D__USE_BFLOAT_16__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+posit16_2: $(OUTDIR)
+	$(SCRIPT) posit16_2
 
-cfloat36_8:
-	$(CXX) $(CXXFLAGS) -D__USE_CFLOAT_36_8__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+bfloat16: $(OUTDIR)
+	$(SCRIPT) bfloat16
 
-cfloat17_5:
-	$(CXX) $(CXXFLAGS) -D__USE_CFLOAT_17_5__ -o $(OUT) $(SRC)
-	$(SCRIPT)
+cfloat36_8: $(OUTDIR)
+	$(SCRIPT) cfloat36_8
+
+cfloat17_5: $(OUTDIR)
+	$(SCRIPT) cfloat17_5
+
+gen_all_images:
+	$(SCRIPT) all
 
 compare:
 	$(PYTHON) compare.py
