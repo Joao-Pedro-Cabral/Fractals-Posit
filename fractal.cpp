@@ -30,7 +30,7 @@ void draw(unsigned char *image, fractal_args_t<T> &fractal_args) {
   unsigned char palette[256][3];
   generate_palette<T>(palette);
 
-#pragma omp parallel for collapse(2) schedule(dynamic, 100)
+#pragma omp parallel for collapse(2) schedule(dynamic, 50)
   for (int y = 0; y < HEIGHT; y++) {
     for (int x = 0; x < WIDTH; x++) {
       T cx, cy, zx, zy;
@@ -102,43 +102,7 @@ void interpret_args(int argc, char *argv[], fractal_args_t<T> &fractal_args) {
   }
 }
 
-template <typename T>
-fractal_t fractal(int argc, char *argv[], unsigned char *image) {
-  fractal_args_t<T> fractal_args;
-  interpret_args<T>(argc, argv, fractal_args);
-  draw<T>(image, fractal_args);
-  return fractal_args.fractal_type;
-}
-
-int main(int argc, char *argv[]) {
-  unsigned char *image = (unsigned char *)malloc(IMAGE_SIZE);
-
-  if (argc < 2) {
-    error_message();
-  }
-
-  fractal_t type;
-
-  if (strcmp(argv[1], "posit32_2") == 0) {
-    type = fractal<sw::universal::posit<32, 2>>(argc, argv, image);
-  } else if (strcmp(argv[1], "posit16_2") == 0) {
-    type = fractal<sw::universal::posit<16, 2>>(argc, argv, image);
-  } else if (strcmp(argv[1], "bfloat16") == 0) {
-    type = fractal<sw::universal::bfloat16>(argc, argv, image);
-  } else if (strcmp(argv[1], "double") == 0) {
-    type = fractal<double>(argc, argv, image);
-  } else if (strcmp(argv[1], "float") == 0) {
-    type = fractal<float>(argc, argv, image);
-  } else if (strcmp(argv[1], "half") == 0) {
-    type = fractal<_Float16>(argc, argv, image);
-  } else if (strcmp(argv[1], "cfloat36_8") == 0) {
-    type = fractal<sw::universal::cfloat<36, 8, uint32_t>>(argc, argv, image);
-  } else if (strcmp(argv[1], "cfloat17_5") == 0) {
-    type = fractal<sw::universal::cfloat<17, 5, uint32_t>>(argc, argv, image);
-  } else {
-    error_message();
-  }
-
+void write_image(char *argv[], unsigned char *image, fractal_t type) {
   char filename[512];
   if (type == MANDELBROT) {
     snprintf(filename, sizeof(filename), "mandelbrot_%+.6f_%+.6f_%+.6f_%s.png",
@@ -156,6 +120,57 @@ int main(int argc, char *argv[]) {
     printf("Image saved to %s\n", filename);
   } else {
     printf("Failed to save image %s\n", filename);
+  }
+}
+
+template <typename T>
+void fractal(int argc, char *argv[], unsigned char *image) {
+  fractal_args_t<T> fractal_args;
+  interpret_args<T>(argc, argv, fractal_args);
+  draw<T>(image, fractal_args);
+  write_image(argv, image, fractal_args.fractal_type);
+}
+
+int main(int argc, char *argv[]) {
+  unsigned char *image = (unsigned char *)malloc(IMAGE_SIZE);
+
+  if (argc < 2) {
+    error_message();
+  }
+
+  if (strcmp(argv[1], "posit32_2") == 0) {
+    fractal<sw::universal::posit<32, 2>>(argc, argv, image);
+  } else if (strcmp(argv[1], "posit16_2") == 0) {
+    fractal<sw::universal::posit<16, 2>>(argc, argv, image);
+  } else if (strcmp(argv[1], "bfloat16") == 0) {
+    fractal<sw::universal::bfloat16>(argc, argv, image);
+  } else if (strcmp(argv[1], "double") == 0) {
+    fractal<double>(argc, argv, image);
+  } else if (strcmp(argv[1], "float") == 0) {
+    fractal<float>(argc, argv, image);
+  } else if (strcmp(argv[1], "half") == 0) {
+    fractal<_Float16>(argc, argv, image);
+  } else if (strcmp(argv[1], "cfloat36_8") == 0) {
+    fractal<sw::universal::cfloat<36, 8, uint32_t>>(argc, argv, image);
+  } else if (strcmp(argv[1], "cfloat17_5") == 0) {
+    fractal<sw::universal::cfloat<17, 5, uint32_t>>(argc, argv, image);
+  } else { // all
+    argv[1] = const_cast<char*>("posit32_2");
+    fractal<sw::universal::posit<32, 2>>(argc, argv, image);
+    argv[1] = const_cast<char*>("posit16_2");
+    fractal<sw::universal::posit<16, 2>>(argc, argv, image);
+    argv[1] = const_cast<char*>("bfloat16");
+    fractal<sw::universal::bfloat16>(argc, argv, image);
+    argv[1] = const_cast<char*>("double");
+    fractal<double>(argc, argv, image);
+    argv[1] = const_cast<char*>("float");
+    fractal<float>(argc, argv, image);
+    argv[1] = const_cast<char*>("half");
+    fractal<_Float16>(argc, argv, image);
+    argv[1] = const_cast<char*>("cfloat36_8");
+    fractal<sw::universal::cfloat<36, 8, uint32_t>>(argc, argv, image);
+    argv[1] = const_cast<char*>("cfloat17_5");
+    fractal<sw::universal::cfloat<17, 5, uint32_t>>(argc, argv, image);
   }
 
   free(image);

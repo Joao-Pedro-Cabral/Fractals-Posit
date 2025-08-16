@@ -11,39 +11,42 @@ OUT := $(OUTDIR)/fractal
 SCRIPT := ./run.sh
 PYTHON := python3
 
-.PHONY: all compile float double half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare install clean
+.PHONY: all compile gen_all_images double float half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare install clean
 
-all: $(OUTDIR) compile float double half posit32_2 posit16_2 bfloat16 cfloat36_8 cfloat17_5 compare
+all: $(OUTDIR) compile gen_all_images compare
 
 $(OUTDIR):
 	mkdir -p $(OUTDIR)
 
-compile:
+compile: $(OUTDIR)
 	$(CXX) $(CXXFLAGS) -o $(OUT) $(SRC)
 
-float:
-	$(SCRIPT) float
-
-double:
+double: $(OUTDIR)
 	$(SCRIPT) double
 
-half:
+float: $(OUTDIR)
+	$(SCRIPT) float
+
+half: $(OUTDIR)
 	$(SCRIPT) half
 
-posit32_2:
+posit32_2: $(OUTDIR)
 	$(SCRIPT) posit32_2
 
-posit16_2:
+posit16_2: $(OUTDIR)
 	$(SCRIPT) posit16_2
 
-bfloat16:
+bfloat16: $(OUTDIR)
 	$(SCRIPT) bfloat16
 
-cfloat36_8:
+cfloat36_8: $(OUTDIR)
 	$(SCRIPT) cfloat36_8
 
-cfloat17_5:
+cfloat17_5: $(OUTDIR)
 	$(SCRIPT) cfloat17_5
+
+gen_all_images:
+	$(SCRIPT) all
 
 compare:
 	$(PYTHON) compare.py
