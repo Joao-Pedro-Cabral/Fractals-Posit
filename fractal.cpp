@@ -140,15 +140,19 @@ int main(int argc, char *argv[]) {
 
   if (strcmp(argv[1], "posit32_2") == 0) {
     fractal<sw::universal::posit<32, 2>>(argc, argv, image);
+  } else if (strcmp(argv[1], "posit16_1") == 0) {
+    fractal<sw::universal::posit<16, 1>>(argc, argv, image);
   } else if (strcmp(argv[1], "posit16_2") == 0) {
     fractal<sw::universal::posit<16, 2>>(argc, argv, image);
-  } else if (strcmp(argv[1], "bfloat16") == 0) {
+  } else if (strcmp(argv[1], "posit16_3") == 0) {
+    fractal<sw::universal::posit<16, 3>>(argc, argv, image);
+  } else if (strcmp(argv[1], "bfloat16_8") == 0) {
     fractal<sw::universal::bfloat16>(argc, argv, image);
-  } else if (strcmp(argv[1], "double") == 0) {
+  } else if (strcmp(argv[1], "cfloat64_11") == 0) {
     fractal<double>(argc, argv, image);
-  } else if (strcmp(argv[1], "float") == 0) {
+  } else if (strcmp(argv[1], "cfloat32_8") == 0) {
     fractal<float>(argc, argv, image);
-  } else if (strcmp(argv[1], "half") == 0) {
+  } else if (strcmp(argv[1], "cfloat16_5") == 0) {
     fractal<_Float16>(argc, argv, image);
   } else if (strcmp(argv[1], "cfloat36_8") == 0) {
     fractal<sw::universal::cfloat<36, 8, uint32_t>>(argc, argv, image);
@@ -157,15 +161,19 @@ int main(int argc, char *argv[]) {
   } else { // all
     argv[1] = const_cast<char*>("posit32_2");
     fractal<sw::universal::posit<32, 2>>(argc, argv, image);
+    argv[1] = const_cast<char*>("posit16_1");
+    fractal<sw::universal::posit<16, 1>>(argc, argv, image);
     argv[1] = const_cast<char*>("posit16_2");
     fractal<sw::universal::posit<16, 2>>(argc, argv, image);
-    argv[1] = const_cast<char*>("bfloat16");
+    argv[1] = const_cast<char*>("posit16_3");
+    fractal<sw::universal::posit<16, 3>>(argc, argv, image);
+    argv[1] = const_cast<char*>("bfloat16_8");
     fractal<sw::universal::bfloat16>(argc, argv, image);
-    argv[1] = const_cast<char*>("double");
+    argv[1] = const_cast<char*>("cfloat64_11");
     fractal<double>(argc, argv, image);
-    argv[1] = const_cast<char*>("float");
+    argv[1] = const_cast<char*>("cfloat32_8");
     fractal<float>(argc, argv, image);
-    argv[1] = const_cast<char*>("half");
+    argv[1] = const_cast<char*>("cfloat16_5");
     fractal<_Float16>(argc, argv, image);
     argv[1] = const_cast<char*>("cfloat36_8");
     fractal<sw::universal::cfloat<36, 8, uint32_t>>(argc, argv, image);
