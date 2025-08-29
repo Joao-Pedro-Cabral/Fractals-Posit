@@ -81,8 +81,8 @@ def compare_sift(image1_path, image2_path):
 
 
 # Regex pattern
-mandelbrot_pattern = re.compile(r'^mandelbrot_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_(float|half|double|posit32_2|posit16_2|bfloat16|cfloat36_8|cfloat17_5)\.png$')
-julia_pattern = re.compile(r'^julia_set_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_(float|half|double|posit32_2|posit16_2|bfloat16|cfloat36_8|cfloat17_5)\.png$')
+mandelbrot_pattern = re.compile(r'^mandelbrot_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_(cfloat32_8|cfloat16_5|cfloat64_11|posit32_2|posit16_1|posit16_2|posit16_3|bfloat16_8|cfloat36_8|cfloat17_5)\.png$')
+julia_pattern = re.compile(r'^julia_set_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_(cfloat32_8|cfloat16_5|cfloat64_11|posit32_2|posit16_1|posit16_2|posit16_3|bfloat16_8|cfloat36_8|cfloat17_5)\.png$')
 
 groups = {}
 
@@ -108,7 +108,7 @@ csv_path = os.path.join(build_dir, "comparison_results.csv")
 with open(csv_path, "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
 
-    dtypes = ["float", "half", "posit32_2", "posit16_2", "bfloat16", "cfloat36_8", "cfloat17_5"]
+    dtypes = ["cfloat32_8", "cfloat16_5", "posit32_2", "posit16_1", "posit16_2", "posit16_3", "bfloat16_8", "cfloat36_8", "cfloat17_5"]
     metrics = [
         ("ssim", compare_ssim, 4),
         ("hist", compare_hist, 4),
@@ -121,7 +121,7 @@ with open(csv_path, "w", newline="") as csvfile:
     writer.writerow(header)
 
     for key, files in groups.items():
-        if "double" not in files:
+        if "cfloat64_11" not in files:
             continue
 
         def path(dtype): return os.path.join(build_dir, files[dtype]) if dtype in files else None
@@ -130,7 +130,7 @@ with open(csv_path, "w", newline="") as csvfile:
         for dtype in dtypes:
             if dtype in files:
                 for metric_name, func, precision in metrics:
-                    val = func(path(dtype), path("double"))
+                    val = func(path(dtype), path("cfloat64_11"))
                     results[(dtype, metric_name)] = f"{val:.{precision}f}"
 
         row = [key] + [results[(dt, m)] for m, _, _ in metrics for dt in dtypes]
