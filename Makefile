@@ -62,7 +62,7 @@ OUT := $(OUTDIR)/fractal
 SCRIPT := ./run.sh
 PYTHON := python3
 
-.PHONY: all compile gen_all_images cfloat64_11 cfloat32_8 cfloat16_5 posit32_2 posit16_1 posit16_2 posit16_3 bfloat16_8 cfloat36_8 cfloat17_5 softposit32 softposit16 cpp_dec_float_100 compare install clean
+.PHONY: all compile gen_all_images cfloat64_11 cfloat32_8 cfloat16_5 posit32_2 posit16_1 posit16_2 posit16_3 bfloat16_8 cfloat36_8 cfloat17_5 softposit32 softposit16 cpp_dec_float_1000 compare install clean
 
 all: $(OUTDIR) compile gen_all_images compare
 
@@ -105,8 +105,8 @@ cfloat36_8: $(OUTDIR) compile
 cfloat17_5: $(OUTDIR) compile
 	$(SCRIPT) cfloat17_5
 
-cpp_dec_float_100: $(OUTDIR) compile
-	$(SCRIPT) cpp_dec_float_100
+cpp_dec_float_1000: $(OUTDIR) compile
+	$(SCRIPT) cpp_dec_float_1000
 
 softposit32: $(OUTDIR) compile
 	$(SCRIPT) softposit32

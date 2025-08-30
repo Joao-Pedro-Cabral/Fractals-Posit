@@ -159,8 +159,8 @@ int main(int argc, char *argv[]) {
 
   if (strcmp(argv[1], "posit32_2") == 0) {
     fractal<sw::universal::posit<32, 2>>(argc, argv, image);
-  } else if (strcmp(argv[1], "cpp_dec_float_100") == 0) {
-    fractal<cpp_dec_float_100>(argc, argv, image);
+  } else if (strcmp(argv[1], "cpp_dec_float_1000") == 0) {
+    fractal<cpp_dec_float_1000>(argc, argv, image);
   } else if (strcmp(argv[1], "posit16_1") == 0) {
     fractal<sw::universal::posit<16, 1>>(argc, argv, image);
   } else if (strcmp(argv[1], "posit16_2") == 0) {
@@ -186,8 +186,8 @@ int main(int argc, char *argv[]) {
     fractal<posit16>(argc, argv, image);
 #endif
   } else { // all
-    argv[1] = const_cast<char *>("cpp_dec_float_100");
-    fractal<cpp_dec_float_100>(argc, argv, image);
+    argv[1] = const_cast<char *>("cpp_dec_float_1000");
+    fractal<cpp_dec_float_1000>(argc, argv, image);
     argv[1] = const_cast<char *>("posit32_2");
     fractal<sw::universal::posit<32, 2>>(argc, argv, image);
     argv[1] = const_cast<char *>("posit16_1");

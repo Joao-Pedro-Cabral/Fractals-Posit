@@ -11,9 +11,9 @@ After running, images are written to `build/`. The Python tool `compare.py` comp
 - IEEE: `cfloat64_11` (double), `cfloat32_8` (\_Float16), `cfloat16_5` (\_Float16)
 - Universal: `posit32_2`, `posit16_3`, `posit16_2`, `posit16_1`, `bfloat16_8`, `cfloat36_8`, `cfloat17_5`
 - SoftPosit: `softposit32`, `softposit16`
-- Boost.Multiprecision: `cpp_dec_float_100` ([cpp_dec_float](https://www.boost.org/doc/libs/1_77_0/libs/multiprecision/doc/html/boost_multiprecision/tut/floats/cpp_dec_float.html))
+- Boost.Multiprecision: `cpp_dec_float_1000` ([cpp_dec_float](https://www.boost.org/doc/libs/1_77_0/libs/multiprecision/doc/html/boost_multiprecision/tut/floats/cpp_dec_float.html))
 
-You select the dtype at runtime as the first CLI argument, e.g. `./fractal cpp_dec_float_100 ...`.
+You select the dtype at runtime as the first CLI argument, e.g. `./fractal cpp_dec_float_1000 ...`.
 
 ---
 
@@ -112,7 +112,7 @@ Or use the convenience script to generate multiple parameter sets:
 Make targets:
 
 - `make all` — build, run all dtypes, then compare
-- `make cfloat64_11|cfloat32_8|cfloat16_5|posit32_2|posit16_2|posit16_3|posit16_1|bfloat16_8|cfloat36_8|cfloat17_5|softposit32|softposit16|cpp_dec_float_100` — run a single dtype
+- `make cfloat64_11|cfloat32_8|cfloat16_5|posit32_2|posit16_2|posit16_3|posit16_1|bfloat16_8|cfloat36_8|cfloat17_5|softposit32|softposit16|cpp_dec_float_1000` — run a single dtype
 - `make compare` — compute metrics over images in `build/`
 - `make clean` — remove `build/`
 
@@ -139,13 +139,13 @@ Output naming convention:
 - Mandelbrot: `mandelbrot_<cx>_<cy>_<xside>_<dtype>.png`
 - Julia set: `julia_set_<cx>_<cy>_<xside>_<jc_x>_<jc_y>_<dtype>.png`
 
-`cpp_dec_float_100` serves as the comparison baseline in `compare.py`. See Boost docs: [cpp_dec_float](https://www.boost.org/doc/libs/1_77_0/libs/multiprecision/doc/html/boost_multiprecision/tut/floats/cpp_dec_float.html).
+`cpp_dec_float_1000` serves as the comparison baseline in `compare.py`. See Boost docs: [cpp_dec_float](https://www.boost.org/doc/libs/1_77_0/libs/multiprecision/doc/html/boost_multiprecision/tut/floats/cpp_dec_float.html).
 
 ---
 
 ## Comparison metrics (`compare.py`)
 
-For each parameter group (same location/scale, possibly same Julia constant), the following metrics are computed against the baseline image (`cpp_dec_float_100`):
+For each parameter group (same location/scale, possibly same Julia constant), the following metrics are computed against the baseline image (`cpp_dec_float_1000`):
 
 - `ssim` — Structural Similarity (higher is better)
 - `psnr` — Peak Signal‑to‑Noise Ratio in dB (higher is better)

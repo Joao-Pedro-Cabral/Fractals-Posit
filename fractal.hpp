@@ -1,7 +1,7 @@
 #ifndef __FRACTAL__H__
 #define __FRACTAL__H__
 
-#include <universal/number/bfloat/bfloat.hpp>
+#include <universal/number/bfloat16/bfloat16.hpp>
 #include <universal/number/cfloat/cfloat.hpp>
 #include <universal/number/posit/posit.hpp>
 #include <boost/multiprecision/cpp_dec_float.hpp>
@@ -10,7 +10,7 @@
 #endif
 
 namespace bmp = boost::multiprecision;
-typedef bmp::number<bmp::cpp_dec_float<100> > cpp_dec_float_100;
+typedef bmp::number<bmp::cpp_dec_float<1000> > cpp_dec_float_1000;
 
 #define WIDTH 800
 #define HEIGHT 600
