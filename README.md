@@ -1,6 +1,6 @@
 # Fractals‑Posit (with SoftPosit)
 
-Generate and compare Mandelbrot and Julia‑set images across multiple numeric formats (IEEE, Universal library types, and SoftPosit).
+Generate and compare Mandelbrot and Julia‑set images across multiple numeric formats (IEEE, Universal library types, SoftPosit, and Boost.Multiprecision).
 
 After running, images are written to `build/`. The Python tool `compare.py` computes similarity metrics vs a high‑precision baseline and saves a CSV to `build/comparison_results.csv`.
 
@@ -8,11 +8,12 @@ After running, images are written to `build/`. The Python tool `compare.py` comp
 
 ## Supported numeric formats (dtype)
 
-- IEEE: `cfloat64_11` (double), `cfloat32_8` (float), `cfloat16_5` (\_Float16)
+- IEEE: `cfloat64_11` (double), `cfloat32_8` (\_Float16), `cfloat16_5` (\_Float16)
 - Universal: `posit32_2`, `posit16_3`, `posit16_2`, `posit16_1`, `bfloat16_8`, `cfloat36_8`, `cfloat17_5`
 - SoftPosit: `softposit32`, `softposit16`
+- Boost.Multiprecision: `cpp_dec_float_100` ([cpp_dec_float](https://www.boost.org/doc/libs/1_77_0/libs/multiprecision/doc/html/boost_multiprecision/tut/floats/cpp_dec_float.html))
 
-You select the dtype at runtime as the first CLI argument, e.g. `./fractal cfloat64_11 ...`.
+You select the dtype at runtime as the first CLI argument, e.g. `./fractal cpp_dec_float_100 ...`.
 
 ---
 
@@ -26,6 +27,9 @@ You select the dtype at runtime as the first CLI argument, e.g. `./fractal cfloa
 - Universal Number Library (headers only)
   - Clone `https://github.com/stillwater-sc/universal`
   - Set `UNIVERSAL_INC` to its include path (see Setup)
+- Boost.Multiprecision (headers only)
+  - Install Boost (e.g., macOS: `brew install boost`, Ubuntu: `sudo apt-get install libboost-dev`)
+  - Optionally set `BOOST_INC` if Boost is not in a default include path
 - SoftPosit (headers + C sources)
   - Clone `https://github.com/Posit-Foundation/soft-posit-cpp`
   ``` bash
@@ -67,6 +71,9 @@ export UNIVERSAL_INC="/absolute/path/to/universal/include/sw"
 
 # Path to soft-posit-cpp root (must have include/ and src/)
 export SOFTPOSIT_ROOT="/absolute/path/to/soft-posit-cpp"
+
+# Optional: path to Boost headers if not in a default include path
+export BOOST_INC="/opt/homebrew/include"
 ```
 
 Notes (macOS):
@@ -105,7 +112,7 @@ Or use the convenience script to generate multiple parameter sets:
 Make targets:
 
 - `make all` — build, run all dtypes, then compare
-- `make cfloat64_11|cfloat32_8|cfloat16_5|posit32_2|posit16_2|posit16_3|posit16_1|bfloat16_8|cfloat36_8|cfloat17_5|softposit32|softposit16` — run a single dtype
+- `make cfloat64_11|cfloat32_8|cfloat16_5|posit32_2|posit16_2|posit16_3|posit16_1|bfloat16_8|cfloat36_8|cfloat17_5|softposit32|softposit16|cpp_dec_float_100` — run a single dtype
 - `make compare` — compute metrics over images in `build/`
 - `make clean` — remove `build/`
 
@@ -132,13 +139,13 @@ Output naming convention:
 - Mandelbrot: `mandelbrot_<cx>_<cy>_<xside>_<dtype>.png`
 - Julia set: `julia_set_<cx>_<cy>_<xside>_<jc_x>_<jc_y>_<dtype>.png`
 
-`cfloat64_11` (double) serves as the comparison baseline in `compare.py`.
+`cpp_dec_float_100` serves as the comparison baseline in `compare.py`. See Boost docs: [cpp_dec_float](https://www.boost.org/doc/libs/1_77_0/libs/multiprecision/doc/html/boost_multiprecision/tut/floats/cpp_dec_float.html).
 
 ---
 
 ## Comparison metrics (`compare.py`)
 
-For each parameter group (same location/scale, possibly same Julia constant), the following metrics are computed against the baseline image (`cfloat64_11`):
+For each parameter group (same location/scale, possibly same Julia constant), the following metrics are computed against the baseline image (`cpp_dec_float_100`):
 
 - `ssim` — Structural Similarity (higher is better)
 - `psnr` — Peak Signal‑to‑Noise Ratio in dB (higher is better)

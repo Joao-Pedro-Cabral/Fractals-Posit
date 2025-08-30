@@ -32,6 +32,11 @@ ifdef UNIVERSAL_INC
   UNIVERSAL_INCLUDE := -I$(UNIVERSAL_INC)
 endif
 
+# Optional: path to Boost headers (for cpp_dec_float). If not provided, rely on system include paths.
+ifdef BOOST_INC
+  BOOST_INCLUDE := -I$(BOOST_INC)
+endif
+
 # Optional: SoftPosit library root (expects include/ and src/)
 # Supply as make SOFTPOSIT_ROOT=/path/to/soft-posit-cpp
 ifdef SOFTPOSIT_ROOT
@@ -45,7 +50,7 @@ ifdef SOFTPOSIT_ROOT
   SOFTPOSIT_STATIC := $(OUTDIR)/libsoftposit.a
 endif
 
-CXXFLAGS := -O3 -DNDEBUG -march=native -std=c++20 -Wall -Wextra $(OPENMP_FLAGS) $(UNIVERSAL_INCLUDE) $(SOFTPOSIT_INCLUDE)
+CXXFLAGS := -O3 -DNDEBUG -march=native -std=c++20 -Wall -Wextra $(OPENMP_FLAGS) $(UNIVERSAL_INCLUDE) $(SOFTPOSIT_INCLUDE) $(BOOST_INCLUDE)
 CPPFLAGS :=
 
 # Sources and output
@@ -57,7 +62,7 @@ OUT := $(OUTDIR)/fractal
 SCRIPT := ./run.sh
 PYTHON := python3
 
-.PHONY: all compile gen_all_images cfloat64_11 cfloat32_8 cfloat16_5 posit32_2 posit16_1 posit16_2 posit16_3 bfloat16_8 cfloat36_8 cfloat17_5 softposit32 softposit16 compare install clean
+.PHONY: all compile gen_all_images cfloat64_11 cfloat32_8 cfloat16_5 posit32_2 posit16_1 posit16_2 posit16_3 bfloat16_8 cfloat36_8 cfloat17_5 softposit32 softposit16 cpp_dec_float_100 compare install clean
 
 all: $(OUTDIR) compile gen_all_images compare
 
@@ -99,6 +104,9 @@ cfloat36_8: $(OUTDIR) compile
 
 cfloat17_5: $(OUTDIR) compile
 	$(SCRIPT) cfloat17_5
+
+cpp_dec_float_100: $(OUTDIR) compile
+	$(SCRIPT) cpp_dec_float_100
 
 softposit32: $(OUTDIR) compile
 	$(SCRIPT) softposit32

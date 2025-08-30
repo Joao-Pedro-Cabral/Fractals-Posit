@@ -108,8 +108,8 @@ def compare_sift(image1_path, image2_path):
     return similarity
 
 
-# Regex pattern (added softposit32/softposit16)
-dtype_group = r"(cfloat32_8|cfloat16_5|cfloat64_11|posit32_2|posit16_1|posit16_2|posit16_3|bfloat16_8|cfloat36_8|cfloat17_5|softposit32|softposit16)"
+# Regex pattern (added softposit32/softposit16 and cpp_dec_float_100)
+dtype_group = r"(cfloat32_8|cfloat16_5|cfloat64_11|posit32_2|posit16_1|posit16_2|posit16_3|bfloat16_8|cfloat36_8|cfloat17_5|softposit32|softposit16|cpp_dec_float_100)"
 mandelbrot_pattern = re.compile(
     rf"^mandelbrot_([+-]?\d+\.\d{{6}})_([+-]?\d+\.\d{{6}})_([0-9.eE+-]+)_{dtype_group}\.png$"
 )
@@ -168,7 +168,8 @@ with open(csv_path, "w", newline="") as csvfile:
     writer.writerow(header)
 
     for key, files in groups.items():
-        if "cfloat64_11" not in files:
+        # cpp_dec_float_100 is the new baseline
+        if "cpp_dec_float_100" not in files:
             continue
 
         def path(dtype):
@@ -179,7 +180,7 @@ with open(csv_path, "w", newline="") as csvfile:
             if dtype in files:
                 for metric_name, func, precision in metrics:
                     try:
-                        val = func(path(dtype), path("cfloat64_11"))
+                        val = func(path(dtype), path("cpp_dec_float_100"))
                     except Exception:
                         val = float("nan")
                     # handle inf and nan formatting explicitly
