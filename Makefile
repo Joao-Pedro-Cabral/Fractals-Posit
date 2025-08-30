@@ -45,7 +45,7 @@ ifdef SOFTPOSIT_ROOT
   SOFTPOSIT_STATIC := $(OUTDIR)/libsoftposit.a
 endif
 
-CXXFLAGS := -O2 -std=c++20 -Wall -Wextra $(OPENMP_FLAGS) $(UNIVERSAL_INCLUDE) $(SOFTPOSIT_INCLUDE)
+CXXFLAGS := -O3 -DNDEBUG -march=native -std=c++20 -Wall -Wextra $(OPENMP_FLAGS) $(UNIVERSAL_INCLUDE) $(SOFTPOSIT_INCLUDE)
 CPPFLAGS :=
 
 # Sources and output
