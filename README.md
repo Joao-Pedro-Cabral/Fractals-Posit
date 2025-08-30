@@ -28,6 +28,13 @@ You select the dtype at runtime as the first CLI argument, e.g. `./fractal cfloa
   - Set `UNIVERSAL_INC` to its include path (see Setup)
 - SoftPosit (headers + C sources)
   - Clone `https://github.com/Posit-Foundation/soft-posit-cpp`
+  ``` bash
+  # Clone SoftPosit with specific commit
+  git clone https://github.com/Posit-Foundation/soft-posit-cpp.git
+  cd soft-posit-cpp
+  git checkout 0ff15525c20c11de588eac4168df03428d9ec287
+  cd ..
+  ```
   - This repo expects the soft‑posit C/C++ headers and sources from `soft-posit-cpp` to be available
   - Set `SOFTPOSIT_ROOT` to the repo root (must contain `include/` and `src/`)
 
