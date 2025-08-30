@@ -6,20 +6,27 @@
 #include <stdlib.h>
 #include <string.h>
 
-template <typename T> void generate_palette(unsigned char palette[256][3]) {
+static inline void generate_palette(unsigned char palette[256][3]) {
   for (int i = 0; i < 256; i++) {
-    T t = static_cast<T>(i) / static_cast<T>(255);
-    T red = static_cast<T>(9) * static_cast<T>(255);
-    T green = static_cast<T>(15) * static_cast<T>(255);
-    T blue = static_cast<T>(17) * static_cast<T>(255) / static_cast<T>(2);
-    red *= (1 - t) * t * t * t;
-    green *= (1 - t) * (1 - t) * t * t;
-    blue *= (1 - t) * (1 - t) * (1 - t) * t;
-    // Some implementations from Universal doesn't have cast to integer types
-    // Then I cast to double and implicitly to uint8_t
-    palette[i][0] = static_cast<uint8_t>(static_cast<double>(red));
-    palette[i][1] = static_cast<uint8_t>(static_cast<double>(green));
-    palette[i][2] = static_cast<uint8_t>(static_cast<double>(blue));
+    double t = static_cast<double>(i) / 255.0;
+    double red = 9.0 * 255.0 * (1.0 - t) * t * t * t;
+    double green = 15.0 * 255.0 * (1.0 - t) * (1.0 - t) * t * t;
+    double blue = 17.0 * 255.0 * (1.0 - t) * (1.0 - t) * (1.0 - t) * t * 0.5;
+    if (red < 0.0)
+      red = 0.0;
+    if (red > 255.0)
+      red = 255.0;
+    if (green < 0.0)
+      green = 0.0;
+    if (green > 255.0)
+      green = 255.0;
+    if (blue < 0.0)
+      blue = 0.0;
+    if (blue > 255.0)
+      blue = 255.0;
+    palette[i][0] = static_cast<uint8_t>(red);
+    palette[i][1] = static_cast<uint8_t>(green);
+    palette[i][2] = static_cast<uint8_t>(blue);
   }
 }
 
@@ -28,7 +35,7 @@ void draw(unsigned char *image, fractal_args_t<T> &fractal_args) {
   T xscale = fractal_args.xside / static_cast<T>(WIDTH);
   T yscale = fractal_args.yside / static_cast<T>(HEIGHT);
   unsigned char palette[256][3];
-  generate_palette<T>(palette);
+  generate_palette(palette);
 
 #pragma omp parallel for collapse(2) schedule(dynamic, 50)
   for (int y = 0; y < HEIGHT; y++) {
@@ -70,9 +77,14 @@ void draw(unsigned char *image, fractal_args_t<T> &fractal_args) {
 
 void error_message() {
   printf("Unexpected input!\n");
-  printf("Usage:\n./program_name mandelbrot <center_x> <center_y> <xside>\n");
-  printf("./program_name julia_set <center_x> <center_y> <xside> <complex_x> "
-         "<complex_y>\n");
+  printf("Usage:\n");
+  printf("  ./fractal <dtype> mandelbrot <center_x> <center_y> <xside>\n");
+  printf("  ./fractal <dtype> julia_set <center_x> <center_y> <xside> "
+         "<complex_x> <complex_y>\n");
+  printf("\n");
+  printf("Examples:\n");
+  printf("  ./fractal cfloat64_11 mandelbrot -0.759 0.000 2.5\n");
+  printf("  ./fractal softposit32 julia_set 0 0 0.002 -0.74543 0.11301\n");
   exit(1);
 }
 
@@ -133,6 +145,10 @@ void fractal(int argc, char *argv[], unsigned char *image) {
 
 int main(int argc, char *argv[]) {
   unsigned char *image = (unsigned char *)malloc(IMAGE_SIZE);
+  if (!image) {
+    fprintf(stderr, "Failed to allocate image buffer of size %d\n", IMAGE_SIZE);
+    return 1;
+  }
 
   if (argc < 2) {
     error_message();
@@ -158,27 +174,39 @@ int main(int argc, char *argv[]) {
     fractal<sw::universal::cfloat<36, 8, uint32_t>>(argc, argv, image);
   } else if (strcmp(argv[1], "cfloat17_5") == 0) {
     fractal<sw::universal::cfloat<17, 5, uint32_t>>(argc, argv, image);
+#ifdef ENABLE_SOFTPOSIT
+  } else if (strcmp(argv[1], "softposit32") == 0) {
+    fractal<posit32>(argc, argv, image);
+  } else if (strcmp(argv[1], "softposit16") == 0) {
+    fractal<posit16>(argc, argv, image);
+#endif
   } else { // all
-    argv[1] = const_cast<char*>("posit32_2");
+    argv[1] = const_cast<char *>("posit32_2");
     fractal<sw::universal::posit<32, 2>>(argc, argv, image);
-    argv[1] = const_cast<char*>("posit16_1");
+    argv[1] = const_cast<char *>("posit16_1");
     fractal<sw::universal::posit<16, 1>>(argc, argv, image);
-    argv[1] = const_cast<char*>("posit16_2");
+    argv[1] = const_cast<char *>("posit16_2");
     fractal<sw::universal::posit<16, 2>>(argc, argv, image);
-    argv[1] = const_cast<char*>("posit16_3");
+    argv[1] = const_cast<char *>("posit16_3");
     fractal<sw::universal::posit<16, 3>>(argc, argv, image);
-    argv[1] = const_cast<char*>("bfloat16_8");
+    argv[1] = const_cast<char *>("bfloat16_8");
     fractal<sw::universal::bfloat16>(argc, argv, image);
-    argv[1] = const_cast<char*>("cfloat64_11");
+    argv[1] = const_cast<char *>("cfloat64_11");
     fractal<double>(argc, argv, image);
-    argv[1] = const_cast<char*>("cfloat32_8");
+    argv[1] = const_cast<char *>("cfloat32_8");
     fractal<float>(argc, argv, image);
-    argv[1] = const_cast<char*>("cfloat16_5");
+    argv[1] = const_cast<char *>("cfloat16_5");
     fractal<_Float16>(argc, argv, image);
-    argv[1] = const_cast<char*>("cfloat36_8");
+    argv[1] = const_cast<char *>("cfloat36_8");
     fractal<sw::universal::cfloat<36, 8, uint32_t>>(argc, argv, image);
-    argv[1] = const_cast<char*>("cfloat17_5");
+    argv[1] = const_cast<char *>("cfloat17_5");
     fractal<sw::universal::cfloat<17, 5, uint32_t>>(argc, argv, image);
+#ifdef ENABLE_SOFTPOSIT
+    argv[1] = const_cast<char *>("softposit32");
+    fractal<posit32>(argc, argv, image);
+    argv[1] = const_cast<char *>("softposit16");
+    fractal<posit16>(argc, argv, image);
+#endif
   }
 
   free(image);
