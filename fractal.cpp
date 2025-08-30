@@ -139,6 +139,8 @@ template <typename T>
 void fractal(int argc, char *argv[], unsigned char *image) {
   fractal_args_t<T> fractal_args;
   interpret_args<T>(argc, argv, fractal_args);
+  const char *fr_name = (fractal_args.fractal_type == MANDELBROT) ? "mandelbrot" : "julia_set";
+  printf("Running dtype=%s, fractal=%s\n", argv[1], fr_name);
   draw<T>(image, fractal_args);
   write_image(argv, image, fractal_args.fractal_type);
 }
