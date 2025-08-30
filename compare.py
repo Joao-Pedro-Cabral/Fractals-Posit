@@ -7,6 +7,8 @@ import csv
 import cv2
 import sys
 from scipy.fft import fft2, fftshift
+from math import log10
+
 
 def compare_fft_rmse(image1_path, image2_path):
     img1 = Image.open(image1_path).convert("L")
@@ -27,8 +29,9 @@ def compare_fft_rmse(image1_path, image2_path):
     mag1 /= np.max(mag1) if np.max(mag1) > 0 else 1
     mag2 /= np.max(mag2) if np.max(mag2) > 0 else 1
 
-    rmse = np.sqrt(np.mean(np.abs((mag1 - mag2))))
+    rmse = np.sqrt(np.mean((mag1 - mag2) ** 2))
     return rmse
+
 
 def compare_ssim(image1_path, image2_path):
     img1 = Image.open(image1_path)
@@ -42,14 +45,39 @@ def compare_ssim(image1_path, image2_path):
     ssim_index, _ = ssim(arr1, arr2, channel_axis=-1, full=True)
     return ssim_index
 
+
+def compare_mse(image1_path, image2_path):
+    img1 = Image.open(image1_path)
+    img2 = Image.open(image2_path)
+
+    if img1.size != img2.size:
+        return -1
+
+    arr1 = np.array(img1, dtype=np.float32)
+    arr2 = np.array(img2, dtype=np.float32)
+    return float(np.mean((arr1 - arr2) ** 2))
+
+
+def compare_psnr(image1_path, image2_path):
+    mse = compare_mse(image1_path, image2_path)
+    if mse <= 0:
+        return float("inf")
+    return 10.0 * log10((255.0**2) / mse)
+
+
 def compare_hist(image1_path, image2_path):
     image1 = cv2.imread(image1_path)
     image2 = cv2.imread(image2_path)
-    hist_img1 = cv2.calcHist([image1], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256])
+    hist_img1 = cv2.calcHist(
+        [image1], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256]
+    )
     cv2.normalize(hist_img1, hist_img1, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
-    hist_img2 = cv2.calcHist([image2], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256])
+    hist_img2 = cv2.calcHist(
+        [image2], [0, 1, 2], None, [256, 256, 256], [0, 256, 0, 256, 0, 256]
+    )
     cv2.normalize(hist_img2, hist_img2, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX)
     return cv2.compareHist(hist_img1, hist_img2, cv2.HISTCMP_CORREL)
+
 
 def compare_sift(image1_path, image2_path):
     # Load RGB images
@@ -80,9 +108,14 @@ def compare_sift(image1_path, image2_path):
     return similarity
 
 
-# Regex pattern
-mandelbrot_pattern = re.compile(r'^mandelbrot_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_(cfloat32_8|cfloat16_5|cfloat64_11|posit32_2|posit16_1|posit16_2|posit16_3|bfloat16_8|cfloat36_8|cfloat17_5)\.png$')
-julia_pattern = re.compile(r'^julia_set_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_([0-9.eE+-]+)_([+-]?\d+\.\d{6})_([+-]?\d+\.\d{6})_(cfloat32_8|cfloat16_5|cfloat64_11|posit32_2|posit16_1|posit16_2|posit16_3|bfloat16_8|cfloat36_8|cfloat17_5)\.png$')
+# Regex pattern (added softposit32/softposit16)
+dtype_group = r"(cfloat32_8|cfloat16_5|cfloat64_11|posit32_2|posit16_1|posit16_2|posit16_3|bfloat16_8|cfloat36_8|cfloat17_5|softposit32|softposit16)"
+mandelbrot_pattern = re.compile(
+    rf"^mandelbrot_([+-]?\d+\.\d{{6}})_([+-]?\d+\.\d{{6}})_([0-9.eE+-]+)_{dtype_group}\.png$"
+)
+julia_pattern = re.compile(
+    rf"^julia_set_([+-]?\d+\.\d{{6}})_([+-]?\d+\.\d{{6}})_([0-9.eE+-]+)_([+-]?\d+\.\d{{6}})_([+-]?\d+\.\d{{6}})_{dtype_group}\.png$"
+)
 
 groups = {}
 
@@ -108,12 +141,26 @@ csv_path = os.path.join(build_dir, "comparison_results.csv")
 with open(csv_path, "w", newline="") as csvfile:
     writer = csv.writer(csvfile)
 
-    dtypes = ["cfloat32_8", "cfloat16_5", "posit32_2", "posit16_1", "posit16_2", "posit16_3", "bfloat16_8", "cfloat36_8", "cfloat17_5"]
+    dtypes = [
+        "cfloat32_8",
+        "cfloat16_5",
+        "posit32_2",
+        "posit16_1",
+        "posit16_2",
+        "posit16_3",
+        "bfloat16_8",
+        "cfloat36_8",
+        "cfloat17_5",
+        "softposit32",
+        "softposit16",
+    ]
     metrics = [
         ("ssim", compare_ssim, 4),
+        ("psnr", compare_psnr, 2),
+        ("mse", compare_mse, 2),
         ("hist", compare_hist, 4),
         ("sift", compare_sift, 4),
-        ("fft_rmse", compare_fft_rmse, 6)
+        ("fft_rmse", compare_fft_rmse, 6),
     ]
 
     # Write header
@@ -124,14 +171,22 @@ with open(csv_path, "w", newline="") as csvfile:
         if "cfloat64_11" not in files:
             continue
 
-        def path(dtype): return os.path.join(build_dir, files[dtype]) if dtype in files else None
+        def path(dtype):
+            return os.path.join(build_dir, files[dtype]) if dtype in files else None
 
         results = {}
         for dtype in dtypes:
             if dtype in files:
                 for metric_name, func, precision in metrics:
-                    val = func(path(dtype), path("cfloat64_11"))
-                    results[(dtype, metric_name)] = f"{val:.{precision}f}"
+                    try:
+                        val = func(path(dtype), path("cfloat64_11"))
+                    except Exception:
+                        val = float("nan")
+                    # handle inf and nan formatting explicitly
+                    if isinstance(val, float) and (np.isinf(val) or np.isnan(val)):
+                        results[(dtype, metric_name)] = str(val)
+                    else:
+                        results[(dtype, metric_name)] = f"{val:.{precision}f}"
 
-        row = [key] + [results[(dt, m)] for m, _, _ in metrics for dt in dtypes]
+        row = [key] + [results.get((dt, m), "") for m, _, _ in metrics for dt in dtypes]
         writer.writerow(row)

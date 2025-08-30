@@ -4,6 +4,9 @@
 #include <universal/number/bfloat/bfloat.hpp>
 #include <universal/number/cfloat/cfloat.hpp>
 #include <universal/number/posit/posit.hpp>
+#ifdef ENABLE_SOFTPOSIT
+#include <softposit_cpp.h>
+#endif
 
 #define WIDTH 800
 #define HEIGHT 600
