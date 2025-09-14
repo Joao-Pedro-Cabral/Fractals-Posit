@@ -75,46 +75,46 @@ $(SOFTPOSIT_OBJS_DIR):
 compile: $(OUTDIR) $(SOFTPOSIT_STATIC)
 	$(CXX) $(CXXFLAGS) -o $(OUT) $(SRC) $(SOFTPOSIT_STATIC)
 
-cfloat64_11: $(OUTDIR) compile
+cfloat64_11: $(OUTDIR)
 	$(SCRIPT) cfloat64_11
 
-cfloat32_8: $(OUTDIR) compile
+cfloat32_8: $(OUTDIR)
 	$(SCRIPT) cfloat32_8
 
-cfloat16_5: $(OUTDIR) compile
+cfloat16_5: $(OUTDIR)
 	$(SCRIPT) cfloat16_5
 
-posit32_2: $(OUTDIR) compile
+posit32_2: $(OUTDIR)
 	$(SCRIPT) posit32_2
 
-posit16_1: $(OUTDIR) compile
+posit16_1: $(OUTDIR)
 	$(SCRIPT) posit16_1
 
-posit16_2: $(OUTDIR) compile
+posit16_2: $(OUTDIR)
 	$(SCRIPT) posit16_2
 
-posit16_3: $(OUTDIR) compile
+posit16_3: $(OUTDIR)
 	$(SCRIPT) posit16_3
 
-bfloat16_8: $(OUTDIR) compile
+bfloat16_8: $(OUTDIR)
 	$(SCRIPT) bfloat16_8
 
-cfloat36_8: $(OUTDIR) compile
+cfloat36_8: $(OUTDIR)
 	$(SCRIPT) cfloat36_8
 
-cfloat17_5: $(OUTDIR) compile
+cfloat17_5: $(OUTDIR)
 	$(SCRIPT) cfloat17_5
 
-cpp_dec_float_1000: $(OUTDIR) compile
+cpp_dec_float_1000: $(OUTDIR)
 	$(SCRIPT) cpp_dec_float_1000
 
-softposit32: $(OUTDIR) compile
+softposit32: $(OUTDIR)
 	$(SCRIPT) softposit32
 
-softposit16: $(OUTDIR) compile
+softposit16: $(OUTDIR)
 	$(SCRIPT) softposit16
 
-gen_all_images: compile
+gen_all_images:
 	$(SCRIPT) all
 
 compare:

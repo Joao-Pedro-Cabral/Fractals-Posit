@@ -1,16 +1,16 @@
-# Fractals‑Posit (with SoftPosit)
+# Fractals‑Posi
 
-Generate and compare Mandelbrot and Julia‑set images across multiple numeric formats (IEEE, Universal library types, SoftPosit, and Boost.Multiprecision).
+Generate and compare Mandelbrot and Julia‑set images across multiple numeric formats (IEEE, BFloat, Posit and Boost.Multiprecision).
 
-After running, images are written to `build/`. The Python tool `compare.py` computes similarity metrics vs a high‑precision baseline and saves a CSV to `build/comparison_results.csv`.
+After running, images are written to `build/`. The Python tool `compare.py` computes similarity metrics vs a high‑precision baseline (Boost.Multiprecision) and saves a CSV to `build/comparison_results.csv`.
 
 ---
 
 ## Supported numeric formats (dtype)
 
-- IEEE: `cfloat64_11` (double), `cfloat32_8` (\_Float16), `cfloat16_5` (\_Float16)
-- Universal: `posit32_2`, `posit16_3`, `posit16_2`, `posit16_1`, `bfloat16_8`, `cfloat36_8`, `cfloat17_5`
-- SoftPosit: `softposit32`, `softposit16`
+- IEEE: `cfloat64_11` (double), `cfloat32_8` (\_Float16), `cfloat16_5` (\_Float16), `cfloat36_8`, `cfloat17_5`
+- BFloat: `bfloat16_8`, 
+- Posit: `posit32_2`, `posit16_3`, `posit16_2`, `posit16_1`
 - Boost.Multiprecision: `cpp_dec_float_1000` ([cpp_dec_float](https://www.boost.org/doc/libs/1_77_0/libs/multiprecision/doc/html/boost_multiprecision/tut/floats/cpp_dec_float.html))
 
 You select the dtype at runtime as the first CLI argument, e.g. `./fractal cpp_dec_float_1000 ...`.
@@ -98,15 +98,6 @@ cd build
 ./fractal softposit16  mandelbrot -0.759 0.000 2.500
 ./fractal posit32_2    mandelbrot -0.759 0.000 2.500
 ./fractal cfloat32_8   mandelbrot -0.759 0.000 2.500
-```
-
-Or use the convenience script to generate multiple parameter sets:
-
-```bash
-# from the repo root
-./run.sh all     # builds & runs many parameter sets for each dtype
-./run.sh ieee    # builds & runs only IEEE float/double/half sets
-./run.sh compare # just runs comparison on existing images in build/
 ```
 
 Make targets:

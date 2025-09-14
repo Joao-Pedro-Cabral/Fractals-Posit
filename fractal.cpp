@@ -13,18 +13,6 @@ static inline void generate_palette(unsigned char palette[256][3]) {
     double red = 9.0 * 255.0 * (1.0 - t) * t * t * t;
     double green = 15.0 * 255.0 * (1.0 - t) * (1.0 - t) * t * t;
     double blue = 17.0 * 255.0 * (1.0 - t) * (1.0 - t) * (1.0 - t) * t * 0.5;
-    if (red < 0.0)
-      red = 0.0;
-    if (red > 255.0)
-      red = 255.0;
-    if (green < 0.0)
-      green = 0.0;
-    if (green > 255.0)
-      green = 255.0;
-    if (blue < 0.0)
-      blue = 0.0;
-    if (blue > 255.0)
-      blue = 255.0;
     palette[i][0] = static_cast<uint8_t>(red);
     palette[i][1] = static_cast<uint8_t>(green);
     palette[i][2] = static_cast<uint8_t>(blue);

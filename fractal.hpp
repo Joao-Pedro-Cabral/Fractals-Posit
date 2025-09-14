@@ -10,7 +10,7 @@
 #endif
 
 namespace bmp = boost::multiprecision;
-typedef bmp::number<bmp::cpp_dec_float<1000> > cpp_dec_float_1000;
+typedef bmp::number<bmp::cpp_dec_float<1000>> cpp_dec_float_1000;
 
 #define WIDTH 800
 #define HEIGHT 600
